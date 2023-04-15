@@ -6,6 +6,8 @@ pub enum Request {
     Get(String),
     Delete(String),
     Exists(String),
+    Increment(String, usize),
+    Decrement(String, usize),
     Flush,
 }
 

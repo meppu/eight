@@ -38,6 +38,28 @@ impl Storage {
         filesystem::delete(&path).await
     }
 
+    pub async fn increment(&self, key: String, add: usize) -> anyhow::Result<usize> {
+        let mut path = filesystem::create_path(&self.path, &key)?;
+
+        let raw = filesystem::read(&path).await?;
+        let value = raw.parse::<usize>()? + add;
+
+        filesystem::write(&mut path, value.to_string()).await?;
+
+        Ok(value)
+    }
+
+    pub async fn decrement(&self, key: String, add: usize) -> anyhow::Result<usize> {
+        let mut path = filesystem::create_path(&self.path, &key)?;
+
+        let raw = filesystem::read(&path).await?;
+        let value = raw.parse::<usize>()? - add;
+
+        filesystem::write(&mut path, value.to_string()).await?;
+
+        Ok(value)
+    }
+
     pub async fn exists(&self, key: String) -> anyhow::Result<bool> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::exists(&path).await

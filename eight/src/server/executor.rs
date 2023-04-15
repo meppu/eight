@@ -10,7 +10,9 @@ impl Executor {
     pub async fn set(storage: Arc<Storage>, key: String, value: String) -> Response {
         match storage.set(key, value).await {
             Ok(_) => Response::Ok,
-            _ => Response::Error(anyhow!("Write operation is failed")),
+            _ => Response::Error(anyhow!(
+                "Write operation is failed due to permission reasons or an invalid key"
+            )),
         }
     }
 
@@ -32,6 +34,24 @@ impl Executor {
         match storage.exists(key).await {
             Ok(true) => Response::Ok,
             _ => Response::Error(anyhow!("Key doesn't exists")),
+        }
+    }
+
+    pub async fn increment(storage: Arc<Storage>, key: String, value: usize) -> Response {
+        match storage.increment(key, value).await {
+            Ok(new) => Response::Value(new.to_string()),
+            _ => Response::Error(anyhow!(
+                "Failed to increment, key doesn't exists or not an integer"
+            )),
+        }
+    }
+
+    pub async fn decrement(storage: Arc<Storage>, key: String, value: usize) -> Response {
+        match storage.decrement(key, value).await {
+            Ok(new) => Response::Value(new.to_string()),
+            _ => Response::Error(anyhow!(
+                "Failed to decrement, key doesn't exists or not an integer"
+            )),
         }
     }
 
