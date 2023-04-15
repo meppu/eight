@@ -3,8 +3,8 @@ use eight::{Request, Response, Server, Storage};
 use std::str::FromStr;
 
 #[tokio::test]
-async fn simple_storage() -> Result<()> {
-    let storage = Storage::from_str("./lol")?;
+async fn simple_server() -> Result<()> {
+    let storage = Storage::from_str("./server_test")?;
     let server = Server::new(storage);
 
     server.start().await;
@@ -21,5 +21,21 @@ async fn simple_storage() -> Result<()> {
     }
 
     server.call(Request::Flush).await?;
+    Ok(())
+}
+
+#[tokio::test]
+async fn simple_storage() -> Result<()> {
+    let storage = Storage::from_str("./storage_test")?;
+
+    storage
+        .set("test".to_string(), "test value".to_string())
+        .await?;
+
+    let value = storage.get("test".to_string()).await?;
+    assert_eq!(value, "test value".to_string());
+
+    storage.flush().await?;
+
     Ok(())
 }

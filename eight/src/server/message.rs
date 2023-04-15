@@ -5,6 +5,7 @@ pub enum Request {
     Set(String, String),
     Get(String),
     Delete(String),
+    Exists(String),
     Flush,
 }
 

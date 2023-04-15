@@ -38,6 +38,11 @@ impl Storage {
         filesystem::delete(&path).await
     }
 
+    pub async fn exists(&self, key: String) -> anyhow::Result<bool> {
+        let path = filesystem::create_path(&self.path, &key)?;
+        filesystem::exists(&path).await
+    }
+
     pub async fn flush(&self) -> anyhow::Result<()> {
         filesystem::flush(&self.path).await
     }

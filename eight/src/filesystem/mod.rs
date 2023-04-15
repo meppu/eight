@@ -19,10 +19,14 @@ pub fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
     Ok(new_path)
 }
 
+pub async fn exists(path: &PathBuf) -> Result<bool> {
+    Ok(fs::try_exists(&path).await?)
+}
+
 pub async fn write(path: &mut PathBuf, content: String) -> Result<()> {
     let file = path.file_name().unwrap().to_str().unwrap().to_string();
 
-    if !fs::try_exists(&path).await? {
+    if !exists(&path).await? {
         path.pop();
         fs::create_dir_all(&path).await?;
         path.push(file);

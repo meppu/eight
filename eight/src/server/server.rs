@@ -53,6 +53,7 @@ impl Server {
                     Request::Set(key, value) => Executor::set(storage, key, value).await,
                     Request::Get(key) => Executor::get(storage, key).await,
                     Request::Delete(key) => Executor::delete(storage, key).await,
+                    Request::Exists(key) => Executor::exists(storage, key).await,
                     Request::Flush => Executor::flush(storage).await,
                 };
 
