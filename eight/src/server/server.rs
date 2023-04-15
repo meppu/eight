@@ -1,8 +1,11 @@
 use super::executor::Executor;
 use crate::{Request, Response, ServerRequest, Storage};
 
-use std::sync::Arc;
-use tokio::sync::{mpsc, oneshot, Mutex};
+use std::{sync::Arc, time::Duration};
+use tokio::{
+    sync::{mpsc, oneshot, Mutex},
+    time,
+};
 
 #[derive(Debug)]
 pub struct Server {
@@ -58,15 +61,6 @@ impl Server {
         }
     }
 
-    pub async fn call(&self, request: Request) -> anyhow::Result<Response> {
-        let (sender, receiver) = oneshot::channel();
-        let request = ServerRequest { sender, request };
-
-        self.sender.send(request)?;
-
-        Ok(receiver.await?)
-    }
-
     pub async fn cast(&self, request: Request) -> anyhow::Result<oneshot::Receiver<Response>> {
         let (sender, receiver) = oneshot::channel();
         let request = ServerRequest { sender, request };
@@ -74,5 +68,13 @@ impl Server {
         self.sender.send(request)?;
 
         Ok(receiver)
+    }
+
+    pub async fn call(&self, request: Request) -> anyhow::Result<Response> {
+        Ok(self.cast(request).await?.await?)
+    }
+
+    pub async fn call_in(&self, request: Request, timeout: Duration) -> anyhow::Result<Response> {
+        time::timeout(timeout, self.call(request)).await?
     }
 }
