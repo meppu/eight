@@ -1,23 +1,8 @@
-use anyhow::{Error, Result};
-use std::{path::PathBuf, str::FromStr};
+mod interface;
 
 use crate::filesystem;
-
-#[derive(Debug, Default)]
-pub struct Storage {
-    path: PathBuf,
-}
-
-impl FromStr for Storage {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self {
-            path: PathBuf::from_str(s)?,
-            ..Default::default()
-        })
-    }
-}
+use anyhow::Result;
+pub use interface::Storage;
 
 impl Storage {
     pub fn new() -> Self {

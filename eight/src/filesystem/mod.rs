@@ -1,3 +1,5 @@
+mod utils;
+
 use anyhow::Result;
 use std::path::PathBuf;
 use tokio::fs;
@@ -5,7 +7,7 @@ use tokio::fs;
 pub fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
     if key.len() < 2 {
         return Err(anyhow::anyhow!("Key must be at least 2 characters long"));
-    } else if !check_valid(&key) {
+    } else if !utils::validate_key(&key) {
         return Err(anyhow::anyhow!("Key must be an alphanumeric value"));
     }
 
@@ -40,14 +42,4 @@ pub async fn delete(path: &PathBuf) -> Result<()> {
 
 pub async fn flush(path: &PathBuf) -> Result<()> {
     Ok(fs::remove_dir_all(path).await?)
-}
-
-fn check_valid(key: &str) -> bool {
-    for character in key.chars() {
-        if !character.is_alphanumeric() && character != '_' {
-            return false;
-        }
-    }
-
-    true
 }
