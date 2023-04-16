@@ -1,5 +1,5 @@
-use super::executor::Executor;
-use crate::{Request, Response, ServerRequest, Storage};
+use super::{executor::Executor, message::ServerRequest};
+use crate::{Request, Response, Storage};
 
 use std::{sync::Arc, time::Duration};
 use tokio::{
@@ -7,21 +7,11 @@ use tokio::{
     time,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Server {
     storage: Arc<Storage>,
     sender: mpsc::UnboundedSender<ServerRequest>,
     receiver: Arc<Mutex<mpsc::UnboundedReceiver<ServerRequest>>>,
-}
-
-impl Clone for Server {
-    fn clone(&self) -> Self {
-        Self {
-            storage: Arc::clone(&self.storage),
-            sender: self.sender.clone(),
-            receiver: Arc::clone(&self.receiver),
-        }
-    }
 }
 
 impl Server {

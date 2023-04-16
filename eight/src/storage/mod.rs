@@ -1,8 +1,10 @@
 use crate::filesystem;
-
 use std::{path::PathBuf, str::FromStr};
 
-#[derive(Debug, Default)]
+#[cfg(test)]
+mod tests;
+
+#[derive(Debug, Default, Clone)]
 pub struct Storage {
     path: PathBuf,
 }

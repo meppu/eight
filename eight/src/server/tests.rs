@@ -1,9 +1,9 @@
-use anyhow::Result;
-use eight::{Request, Response, Server, Storage};
+use crate::{Request, Response, Server, Storage};
 use std::str::FromStr;
 
 #[tokio::test]
-async fn simple_server() -> Result<()> {
+
+async fn test_server() -> anyhow::Result<()> {
     let storage = Storage::from_str("./server_test")?;
     let server = Server::new(storage);
 
@@ -25,23 +25,7 @@ async fn simple_server() -> Result<()> {
 }
 
 #[tokio::test]
-async fn simple_storage() -> Result<()> {
-    let storage = Storage::from_str("./storage_test")?;
-
-    storage
-        .set("test".to_string(), "test value".to_string())
-        .await?;
-
-    let value = storage.get("test".to_string()).await?;
-    assert_eq!(value, "test value".to_string());
-
-    storage.flush().await?;
-
-    Ok(())
-}
-
-#[tokio::test]
-async fn increment_decrement() -> Result<()> {
+async fn test_increment_decrement() -> anyhow::Result<()> {
     let storage = Storage::from_str("./inc_dec_test")?;
     let server = Server::new(storage);
 

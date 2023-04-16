@@ -1,6 +1,7 @@
+use anyhow::anyhow;
 use tokio::sync::oneshot;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Request {
     Set(String, String),
     Get(String),
@@ -12,22 +13,22 @@ pub enum Request {
 }
 
 #[derive(Debug)]
-pub(crate) struct ServerRequest {
-    pub(crate) sender: oneshot::Sender<Response>,
-    pub(crate) request: Request,
+pub(super) struct ServerRequest {
+    pub(super) sender: oneshot::Sender<Response>,
+    pub(super) request: Request,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Response {
     Ok,
     Value(String),
-    Error(anyhow::Error),
+    Error(&'static str),
 }
 
 impl Response {
     pub fn result(self) -> anyhow::Result<Response> {
         match self {
-            Response::Error(err) => Err(err),
+            Response::Error(err) => Err(anyhow!(err)),
             other => Ok(other),
         }
     }
