@@ -1,6 +1,6 @@
 use super::{executor::Executor, message::ServerRequest};
 use crate::{language::QueryExecutor, Request, Response, Storage};
-use std::{collections::HashMap, sync::Arc, time::Duration};
+use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex},
     time,
@@ -11,6 +11,15 @@ pub struct Server {
     storage: Arc<Storage>,
     sender: mpsc::UnboundedSender<ServerRequest>,
     receiver: Arc<Mutex<mpsc::UnboundedReceiver<ServerRequest>>>,
+}
+
+impl FromStr for Server {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let storage = Storage::from_str(s)?;
+        Ok(Server::new(storage))
+    }
 }
 
 impl Server {

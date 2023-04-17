@@ -1,5 +1,5 @@
 use super::lexer::lex;
-use crate::{Response, Server, Storage};
+use crate::{Response, Server};
 use std::{collections::HashMap, str::FromStr};
 
 #[test]
@@ -14,9 +14,7 @@ fn test_lexer() {
 
 #[tokio::test]
 async fn test_query() -> anyhow::Result<()> {
-    let storage = Storage::from_str("./query_test")?;
-    let server = Server::new(storage);
-
+    let server = Server::from_str("./query_test")?;
     server.start().await;
 
     let mut env = HashMap::<String, String>::new();

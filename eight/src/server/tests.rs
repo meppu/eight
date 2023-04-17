@@ -1,12 +1,10 @@
-use crate::{Request, Response, Server, Storage};
+use crate::{Request, Response, Server};
 use std::str::FromStr;
 
 #[tokio::test]
 
 async fn test_server() -> anyhow::Result<()> {
-    let storage = Storage::from_str("./server_test")?;
-    let server = Server::new(storage);
-
+    let server = Server::from_str("./server_test")?;
     server.start().await;
 
     server
@@ -26,9 +24,7 @@ async fn test_server() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn test_increment_decrement() -> anyhow::Result<()> {
-    let storage = Storage::from_str("./inc_dec_test")?;
-    let server = Server::new(storage);
-
+    let server = Server::from_str("./inc_dec_test")?;
     server.start().await;
 
     server
