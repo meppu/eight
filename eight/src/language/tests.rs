@@ -1,5 +1,5 @@
 use super::lexer::lex;
-use crate::{language::runtime::QueryExecutor, Response, Server, Storage};
+use crate::{Response, Server, Storage};
 use std::{collections::HashMap, str::FromStr};
 
 #[test]
@@ -13,21 +13,29 @@ fn test_lexer() {
 }
 
 #[tokio::test]
-async fn test_runtime() -> anyhow::Result<()> {
-    let storage = Storage::from_str("./runtime_test")?;
+async fn test_query() -> anyhow::Result<()> {
+    let storage = Storage::from_str("./query_test")?;
     let server = Server::new(storage);
 
     server.start().await;
 
-    let input = r#"set a_key "$hello"; get a_key; flush;"#.to_string();
-
     let mut env = HashMap::<String, String>::new();
-    env.insert("hello".into(), "wow".into());
+    env.insert("user".into(), "icecat".into());
+    env.insert("val".into(), "hello world!".into());
 
-    let mut runtime = QueryExecutor::new(input, env);
-    let result = runtime.execute(&server).await?;
+    let results = server
+        .query(
+            r#"
+        set $user $val; 
+        get $user;
+        flush;
+        "#,
+            env.clone(),
+        )
+        .await?;
 
-    assert_eq!(result, Response::Ok);
+    assert_eq!(results[0], Response::Ok);
+    assert_eq!(results[1], Response::Value("hello world!".to_string()));
 
     Ok(())
 }

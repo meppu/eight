@@ -6,4 +6,4 @@ mod token;
 #[cfg(test)]
 mod tests;
 
-pub use runtime::QueryExecutor;
+pub(crate) use runtime::QueryExecutor;

@@ -1,10 +1,10 @@
-mod utils;
-
 use anyhow::Result;
 use std::path::PathBuf;
 use tokio::fs;
 
-pub fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
+mod utils;
+
+pub(crate) fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
     if key.len() < 2 {
         return Err(anyhow::anyhow!("Key must be at least 2 characters long"));
     } else if !utils::validate_key(&key) {
@@ -19,11 +19,11 @@ pub fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
     Ok(new_path)
 }
 
-pub async fn exists(path: &PathBuf) -> Result<bool> {
+pub(crate) async fn exists(path: &PathBuf) -> Result<bool> {
     Ok(fs::try_exists(&path).await?)
 }
 
-pub async fn write(path: &mut PathBuf, content: String) -> Result<()> {
+pub(crate) async fn write(path: &mut PathBuf, content: String) -> Result<()> {
     let file = path.file_name().unwrap().to_str().unwrap().to_string();
 
     if !exists(&path).await? {
@@ -36,14 +36,14 @@ pub async fn write(path: &mut PathBuf, content: String) -> Result<()> {
     Ok(())
 }
 
-pub async fn read(path: &PathBuf) -> Result<String> {
+pub(crate) async fn read(path: &PathBuf) -> Result<String> {
     Ok(fs::read_to_string(path).await?)
 }
 
-pub async fn delete(path: &PathBuf) -> Result<()> {
+pub(crate) async fn delete(path: &PathBuf) -> Result<()> {
     Ok(fs::remove_file(path).await?)
 }
 
-pub async fn flush(path: &PathBuf) -> Result<()> {
+pub(crate) async fn flush(path: &PathBuf) -> Result<()> {
     Ok(fs::remove_dir_all(path).await?)
 }

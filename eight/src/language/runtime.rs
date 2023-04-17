@@ -1,10 +1,12 @@
-use super::{lexer::lex, parser::Parser};
+use super::{
+    lexer::lex,
+    parser::{CallType, Parser},
+};
 use crate::{Response, Server};
-use anyhow::anyhow;
 use std::{collections::HashMap, mem};
 
 #[derive(Debug, Default, Clone)]
-pub struct QueryExecutor {
+pub(crate) struct QueryExecutor {
     source: String,
     env: HashMap<String, String>,
 }
@@ -14,16 +16,24 @@ impl QueryExecutor {
         Self { source, env }
     }
 
-    pub async fn execute(&mut self, server: &Server) -> anyhow::Result<Response> {
+    pub async fn execute(&mut self, server: &Server) -> anyhow::Result<Vec<Response>> {
         let collection = lex(mem::take(&mut self.source));
         let mut parser = Parser::new(mem::take(&mut self.env));
+        let mut results = Vec::new();
 
-        let mut last_result = Err(anyhow!("Nothing to execute"));
         for tokens in collection {
             let command = parser.execute(tokens)?;
-            last_result = server.call(command).await;
+
+            match command {
+                CallType::Await(request) => {
+                    results.push(server.call(request).await?);
+                }
+                CallType::Spawn(request) => {
+                    server.cast(request).await?;
+                }
+            }
         }
 
-        last_result
+        Ok(results)
     }
 }

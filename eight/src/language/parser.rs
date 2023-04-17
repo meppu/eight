@@ -3,8 +3,15 @@ use crate::Request;
 use anyhow::anyhow;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub(super) struct Parser {
     env: HashMap<String, String>,
+}
+
+#[derive(Debug)]
+pub(super) enum CallType {
+    Await(Request),
+    Spawn(Request),
 }
 
 impl Parser {
@@ -12,10 +19,19 @@ impl Parser {
         Self { env }
     }
 
-    pub fn execute(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    pub fn execute(&mut self, tokens: Vec<Token>) -> anyhow::Result<CallType> {
         let command = tokens.first().ok_or(anyhow!("Command not specified"))?;
+        let mut command_name = command.value.chars();
 
-        match command.value.as_str() {
+        let call_type = if command.value.ends_with("?") {
+            command_name.next_back();
+
+            true
+        } else {
+            false
+        };
+
+        let request = match command_name.as_str() {
             "set" => self.parse_set(tokens),
             "get" => self.parse_get(tokens),
             "delete" => self.parse_delete(tokens),
@@ -28,7 +44,17 @@ impl Parser {
                 command.line,
                 command.column
             )),
-        }
+        }?;
+
+        Ok(if call_type {
+            CallType::Spawn(request)
+        } else {
+            CallType::Await(request)
+        })
+    }
+
+    fn generate_err(text: &str, token: &Token) -> anyhow::Error {
+        anyhow!("{text} (line {}, column {})", token.line, token.column)
     }
 
     fn fetch_env(&self, value: &str) -> String {
@@ -47,10 +73,9 @@ impl Parser {
 
     fn parse_set(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 3 {
-            return Err(anyhow!(
-                "Set command requires two (2) arguments (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Set command requires two (2) argument",
+                &tokens[0],
             ));
         }
 
@@ -62,10 +87,9 @@ impl Parser {
 
     fn parse_get(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 2 {
-            return Err(anyhow!(
-                "Get command requires one (1) argument (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Get command requires one (1) argument",
+                &tokens[0],
             ));
         }
 
@@ -75,10 +99,9 @@ impl Parser {
 
     fn parse_delete(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 2 {
-            return Err(anyhow!(
-                "Delete command requires one (1) argument (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Delete command requires one (1) argument",
+                &tokens[0],
             ));
         }
 
@@ -88,10 +111,9 @@ impl Parser {
 
     fn parse_exists(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 2 {
-            return Err(anyhow!(
-                "Exists command requires one (1) argument (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Exists command requires one (1) argument",
+                &tokens[0],
             ));
         }
 
@@ -101,10 +123,9 @@ impl Parser {
 
     fn parse_increment(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 2 {
-            return Err(anyhow!(
-                "Increment command requires two (2) arguments (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Increment command requires two (2) argument",
+                &tokens[0],
             ));
         }
 
@@ -117,20 +138,18 @@ impl Parser {
         if let Ok(number) = value.parse::<usize>() {
             Ok(Request::Increment(key, number))
         } else {
-            Err(anyhow!(
-                "Second argument for increment command must be a valid unsigned integer (line {}, column {})",
-                value_token.line,
-                value_token.column
+            Err(Parser::generate_err(
+                "Second argument for increment command must be a valid unsigned integer",
+                &value_token,
             ))
         }
     }
 
     fn parse_decrement(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 2 {
-            return Err(anyhow!(
-                "Decrement command requires two (2) arguments (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Decrement command requires two (2) argument",
+                &tokens[0],
             ));
         }
 
@@ -143,20 +162,18 @@ impl Parser {
         if let Ok(number) = value.parse::<usize>() {
             Ok(Request::Decrement(key, number))
         } else {
-            Err(anyhow!(
-                "Second argument for decrement command must be a valid unsigned integer (line {}, column {})",
-                value_token.line,
-                value_token.column
+            Err(Parser::generate_err(
+                "Second argument for decrement command must be a valid unsigned integer",
+                &value_token,
             ))
         }
     }
 
     fn parse_flush(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
         if tokens.len() != 1 {
-            return Err(anyhow!(
-                "Flush command can't take any value (line {}, column {})",
-                tokens[0].line,
-                tokens[0].column
+            return Err(Parser::generate_err(
+                "Flush command can't take any value",
+                &tokens[0],
             ));
         }
 
