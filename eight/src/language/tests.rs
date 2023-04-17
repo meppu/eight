@@ -24,8 +24,10 @@ async fn test_query() -> EightResult<()> {
     let results = server
         .query(
             r#"
-        set $user $val;
+        # an example comment
+        set $user $val; # hello!
         get $user;
+        # delete $user (commented out)
         flush;
         "#,
             env,

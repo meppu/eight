@@ -1,12 +1,25 @@
 use super::token::Token;
 use std::mem;
 
+#[derive(Debug, Clone)]
+enum State {
+    String,
+    Identifier,
+    Comment,
+}
+
+impl Default for State {
+    fn default() -> Self {
+        State::Identifier
+    }
+}
+
 #[derive(Debug, Default, Clone)]
 pub(super) struct Lexer {
     source: String,
     line: usize,
     column: usize,
-    state: bool,
+    state: State,
     tokens: Vec<Token>,
     temp: String,
 }
@@ -24,10 +37,10 @@ impl Lexer {
         let source = mem::take(&mut self.source);
 
         for character in source.chars() {
-            if self.state {
-                self.collect_string(character);
-            } else {
-                self.collect_identifier(character);
+            match self.state {
+                State::String => self.handle_string(character),
+                State::Identifier => self.handle_identifier(character),
+                State::Comment => self.handle_comment(character),
             }
 
             if character == '\n' {
@@ -58,7 +71,7 @@ impl Lexer {
         new_tokens
     }
 
-    fn collect_string(&mut self, character: char) {
+    fn handle_string(&mut self, character: char) {
         if character == '"' {
             match self.temp.pop() {
                 Some('\\') => self.temp.push(character),
@@ -73,7 +86,7 @@ impl Lexer {
         }
     }
 
-    fn collect_identifier(&mut self, character: char) {
+    fn handle_identifier(&mut self, character: char) {
         match character {
             ' ' | '\t' | '\n' | '\r' => self.make_token(),
             ';' => {
@@ -82,13 +95,20 @@ impl Lexer {
                 self.temp = ";".to_string();
                 self.make_token();
             }
-            '"' => self.state = true,
+            '"' => self.state = State::String,
+            '#' => self.state = State::Comment,
             other => self.temp.push(other),
         }
     }
 
+    fn handle_comment(&mut self, character: char) {
+        if character == '\n' {
+            self.state = State::default();
+        }
+    }
+
     fn make_token(&mut self) {
-        self.state = false;
+        self.state = State::default();
 
         if self.temp.is_empty() {
             return;
