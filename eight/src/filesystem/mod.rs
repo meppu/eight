@@ -1,14 +1,14 @@
-use anyhow::Result;
+use crate::EightError;
 use std::path::PathBuf;
 use tokio::fs;
 
 mod utils;
 
-pub(crate) fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
+pub(crate) fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf, EightError> {
     if key.len() < 2 {
-        return Err(anyhow::anyhow!("Key must be at least 2 characters long"));
+        return Err(EightError::KeyTooShort);
     } else if !utils::validate_key(&key) {
-        return Err(anyhow::anyhow!("Key must be an alphanumeric value"));
+        return Err(EightError::KeyWrongFormat);
     }
 
     let mut new_path = path.clone();
@@ -19,31 +19,54 @@ pub(crate) fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf> {
     Ok(new_path)
 }
 
-pub(crate) async fn exists(path: &PathBuf) -> Result<bool> {
-    Ok(fs::try_exists(&path).await?)
+pub(crate) async fn exists(path: &PathBuf) -> Result<bool, EightError> {
+    if let Ok(value) = fs::try_exists(&path).await {
+        Ok(value)
+    } else {
+        Err(EightError::CheckExistsFail)
+    }
 }
 
-pub(crate) async fn write(path: &mut PathBuf, content: String) -> Result<()> {
+pub(crate) async fn write(path: &mut PathBuf, content: String) -> Result<(), EightError> {
     let file = path.file_name().unwrap().to_str().unwrap().to_string();
 
+    path.pop();
+
     if !exists(&path).await? {
-        path.pop();
-        fs::create_dir_all(&path).await?;
-        path.push(file);
+        if fs::create_dir_all(&path).await.is_err() {
+            return Err(EightError::CreateDirFail);
+        }
     }
 
-    fs::write(&path, content).await?;
-    Ok(())
+    path.push(file);
+
+    if fs::write(&path, content).await.is_err() {
+        Err(EightError::FileWriteFail)
+    } else {
+        Ok(())
+    }
 }
 
-pub(crate) async fn read(path: &PathBuf) -> Result<String> {
-    Ok(fs::read_to_string(path).await?)
+pub(crate) async fn read(path: &PathBuf) -> Result<String, EightError> {
+    if let Ok(value) = fs::read_to_string(path).await {
+        Ok(value)
+    } else {
+        Err(EightError::FileReadFail)
+    }
 }
 
-pub(crate) async fn delete(path: &PathBuf) -> Result<()> {
-    Ok(fs::remove_file(path).await?)
+pub(crate) async fn delete(path: &PathBuf) -> Result<(), EightError> {
+    if let Ok(value) = fs::remove_file(path).await {
+        Ok(value)
+    } else {
+        Err(EightError::FileRemoveFail)
+    }
 }
 
-pub(crate) async fn flush(path: &PathBuf) -> Result<()> {
-    Ok(fs::remove_dir_all(path).await?)
+pub(crate) async fn flush(path: &PathBuf) -> Result<(), EightError> {
+    if let Ok(value) = fs::remove_dir_all(path).await {
+        Ok(value)
+    } else {
+        Err(EightError::DirRemoveFail)
+    }
 }

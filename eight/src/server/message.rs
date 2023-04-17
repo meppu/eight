@@ -1,4 +1,3 @@
-use anyhow::anyhow;
 use tokio::sync::oneshot;
 
 #[derive(Debug, Clone)]
@@ -22,18 +21,5 @@ pub(super) struct ServerRequest {
 pub enum Response {
     Ok,
     Value(String),
-    Error(&'static str),
-}
-
-impl Response {
-    pub fn result(self) -> anyhow::Result<Response> {
-        match self {
-            Response::Error(err) => Err(anyhow!(err)),
-            other => Ok(other),
-        }
-    }
-
-    pub fn option(self) -> Option<Response> {
-        self.result().ok()
-    }
+    Error(String),
 }

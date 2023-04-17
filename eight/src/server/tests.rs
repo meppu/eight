@@ -1,16 +1,15 @@
-use crate::{Request, Response, Server};
+use crate::{EightResult, Request, Response, Server};
 use std::str::FromStr;
 
 #[tokio::test]
 
-async fn test_server() -> anyhow::Result<()> {
-    let server = Server::from_str("./server_test")?;
+async fn test_server() -> EightResult<()> {
+    let server = Server::from_str("./server_test").unwrap();
     server.start().await;
 
     server
         .call(Request::Set("test".into(), "iyi".into()))
-        .await?
-        .result()?;
+        .await?;
 
     if let Response::Value(value) = server.call(Request::Get("test".into())).await? {
         assert_eq!(value, "iyi".to_string());
@@ -23,14 +22,13 @@ async fn test_server() -> anyhow::Result<()> {
 }
 
 #[tokio::test]
-async fn test_increment_decrement() -> anyhow::Result<()> {
-    let server = Server::from_str("./inc_dec_test")?;
+async fn test_increment_decrement() -> EightResult<()> {
+    let server = Server::from_str("./inc_dec_test").unwrap();
     server.start().await;
 
     server
         .call(Request::Set("test".into(), "10".into()))
-        .await?
-        .result()?;
+        .await?;
 
     if let Response::Value(value) = server.call(Request::Get("test".into())).await? {
         assert_eq!(value, "10".to_string());

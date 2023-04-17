@@ -1,6 +1,5 @@
 use super::token::Token;
-use crate::Request;
-use anyhow::anyhow;
+use crate::{EightError, EightResult, Request};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -19,11 +18,12 @@ impl Parser {
         Self { env }
     }
 
-    pub fn execute(&mut self, tokens: Vec<Token>) -> anyhow::Result<CallType> {
-        let command = tokens.first().ok_or(anyhow!("Command not specified"))?;
+    pub fn execute(&mut self, tokens: Vec<Token>) -> EightResult<CallType> {
+        let command = tokens.first().ok_or(EightError::CommandNotFound)?;
         let mut command_name = command.value.chars();
 
-        let call_type = if command.value.ends_with("?") {
+        // check if call or cast
+        let is_cast = if command.value.ends_with("?") {
             command_name.next_back();
 
             true
@@ -36,30 +36,27 @@ impl Parser {
             "get" => self.parse_get(tokens),
             "delete" => self.parse_delete(tokens),
             "exists" => self.parse_exists(tokens),
-            "increment" => self.parse_increment(tokens),
-            "decrement" => self.parse_decrement(tokens),
+            "inc" => self.parse_increment(tokens),
+            "dec" => self.parse_decrement(tokens),
             "flush" => self.parse_flush(tokens),
-            _ => Err(anyhow!(
-                "Command not found (line {}, column {})",
+            _ => Err(EightError::CommandError(
+                "Command not found".into(),
                 command.line,
-                command.column
+                command.column,
             )),
         }?;
 
-        Ok(if call_type {
+        Ok(if is_cast {
             CallType::Spawn(request)
         } else {
             CallType::Await(request)
         })
     }
 
-    fn generate_err(text: &str, token: &Token) -> anyhow::Error {
-        anyhow!("{text} (line {}, column {})", token.line, token.column)
-    }
-
     fn fetch_env(&self, value: &str) -> String {
         let mut chars = value.chars();
 
+        // $ stands for variable
         if value.starts_with("$") {
             chars.next();
 
@@ -71,11 +68,12 @@ impl Parser {
         value.into()
     }
 
-    fn parse_set(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    fn parse_set(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
         if tokens.len() != 3 {
-            return Err(Parser::generate_err(
-                "Set command requires two (2) argument",
-                &tokens[0],
+            return Err(EightError::CommandError(
+                "Set command requires two (2) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -85,11 +83,12 @@ impl Parser {
         Ok(Request::Set(key, value))
     }
 
-    fn parse_get(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    fn parse_get(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
         if tokens.len() != 2 {
-            return Err(Parser::generate_err(
-                "Get command requires one (1) argument",
-                &tokens[0],
+            return Err(EightError::CommandError(
+                "Get command requires one (1) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -97,11 +96,12 @@ impl Parser {
         Ok(Request::Get(key))
     }
 
-    fn parse_delete(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    fn parse_delete(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
         if tokens.len() != 2 {
-            return Err(Parser::generate_err(
-                "Delete command requires one (1) argument",
-                &tokens[0],
+            return Err(EightError::CommandError(
+                "Delete command requires one (1) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -109,11 +109,12 @@ impl Parser {
         Ok(Request::Delete(key))
     }
 
-    fn parse_exists(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    fn parse_exists(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
         if tokens.len() != 2 {
-            return Err(Parser::generate_err(
-                "Exists command requires one (1) argument",
-                &tokens[0],
+            return Err(EightError::CommandError(
+                "Exists command requires one (1) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -121,11 +122,12 @@ impl Parser {
         Ok(Request::Exists(key))
     }
 
-    fn parse_increment(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
-        if tokens.len() != 2 {
-            return Err(Parser::generate_err(
-                "Increment command requires two (2) argument",
-                &tokens[0],
+    fn parse_increment(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
+        if tokens.len() != 3 {
+            return Err(EightError::CommandError(
+                "Increment command requires two (2) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -138,18 +140,20 @@ impl Parser {
         if let Ok(number) = value.parse::<usize>() {
             Ok(Request::Increment(key, number))
         } else {
-            Err(Parser::generate_err(
-                "Second argument for increment command must be a valid unsigned integer",
-                &value_token,
+            Err(EightError::CommandError(
+                "Second argument for increment command must be a valid unsigned integer".into(),
+                value_token.line,
+                value_token.column,
             ))
         }
     }
 
-    fn parse_decrement(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
-        if tokens.len() != 2 {
-            return Err(Parser::generate_err(
-                "Decrement command requires two (2) argument",
-                &tokens[0],
+    fn parse_decrement(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
+        if tokens.len() != 3 {
+            return Err(EightError::CommandError(
+                "Decrement command requires two (2) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 
@@ -162,18 +166,20 @@ impl Parser {
         if let Ok(number) = value.parse::<usize>() {
             Ok(Request::Decrement(key, number))
         } else {
-            Err(Parser::generate_err(
-                "Second argument for decrement command must be a valid unsigned integer",
-                &value_token,
+            Err(EightError::CommandError(
+                "Second argument for decrement command must be a valid unsigned integer".into(),
+                value_token.line,
+                value_token.column,
             ))
         }
     }
 
-    fn parse_flush(&mut self, tokens: Vec<Token>) -> anyhow::Result<Request> {
+    fn parse_flush(&mut self, tokens: Vec<Token>) -> EightResult<Request> {
         if tokens.len() != 1 {
-            return Err(Parser::generate_err(
-                "Flush command can't take any value",
-                &tokens[0],
+            return Err(EightError::CommandError(
+                "Flush command can't take any value".into(),
+                tokens[0].line,
+                tokens[0].column,
             ));
         }
 

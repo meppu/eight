@@ -1,9 +1,9 @@
-use crate::Storage;
+use crate::{EightResult, Storage};
 use std::str::FromStr;
 
 #[tokio::test]
-async fn test_storage() -> anyhow::Result<()> {
-    let storage = Storage::from_str("./storage_test")?;
+async fn test_storage() -> EightResult<()> {
+    let storage = Storage::from_str("./storage_test").unwrap();
 
     storage
         .set("test".to_string(), "test value".to_string())

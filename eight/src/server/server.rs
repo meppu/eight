@@ -1,5 +1,5 @@
 use super::{executor::Executor, message::ServerRequest};
-use crate::{language::QueryExecutor, Request, Response, Storage};
+use crate::{language::QueryExecutor, EightError, EightResult, Request, Response, Storage};
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex},
@@ -14,7 +14,7 @@ pub struct Server {
 }
 
 impl FromStr for Server {
-    type Err = anyhow::Error;
+    type Err = core::convert::Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let storage = Storage::from_str(s)?;
@@ -57,33 +57,43 @@ impl Server {
                     Request::Flush => Executor::flush(storage).await,
                 };
 
-                let _ = sender.send(response);
+                sender.send(response).ok();
             });
         }
     }
 
-    pub async fn cast(&self, request: Request) -> anyhow::Result<oneshot::Receiver<Response>> {
+    pub async fn cast(&self, request: Request) -> EightResult<oneshot::Receiver<Response>> {
         let (sender, receiver) = oneshot::channel();
         let request = ServerRequest { sender, request };
 
-        self.sender.send(request)?;
-
-        Ok(receiver)
+        if self.sender.send(request).is_err() {
+            Err(EightError::SendFail)
+        } else {
+            Ok(receiver)
+        }
     }
 
-    pub async fn call(&self, request: Request) -> anyhow::Result<Response> {
-        Ok(self.cast(request).await?.await?)
+    pub async fn call(&self, request: Request) -> EightResult<Response> {
+        if let Ok(value) = self.cast(request).await?.await {
+            Ok(value)
+        } else {
+            Err(EightError::RecvFail)
+        }
     }
 
-    pub async fn call_in(&self, request: Request, timeout: Duration) -> anyhow::Result<Response> {
-        time::timeout(timeout, self.call(request)).await?
+    pub async fn call_in(&self, request: Request, timeout: Duration) -> EightResult<Response> {
+        if let Ok(value) = time::timeout(timeout, self.call(request)).await {
+            value
+        } else {
+            Err(EightError::RecvTimeout)
+        }
     }
 
     pub async fn query<T>(
         &self,
         query: T,
         env: HashMap<String, String>,
-    ) -> anyhow::Result<Vec<Response>>
+    ) -> EightResult<Vec<Response>>
     where
         T: ToString,
     {

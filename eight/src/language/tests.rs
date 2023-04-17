@@ -1,5 +1,5 @@
 use super::lexer::lex;
-use crate::{Response, Server};
+use crate::{EightResult, Response, Server};
 use std::{collections::HashMap, str::FromStr};
 
 #[test]
@@ -13,8 +13,8 @@ fn test_lexer() {
 }
 
 #[tokio::test]
-async fn test_query() -> anyhow::Result<()> {
-    let server = Server::from_str("./query_test")?;
+async fn test_query() -> EightResult<()> {
+    let server = Server::from_str("./query_test").unwrap();
     server.start().await;
 
     let mut env = HashMap::<String, String>::new();
@@ -24,11 +24,11 @@ async fn test_query() -> anyhow::Result<()> {
     let results = server
         .query(
             r#"
-        set $user $val; 
+        set $user $val;
         get $user;
         flush;
         "#,
-            env.clone(),
+            env,
         )
         .await?;
 
