@@ -1,7 +1,7 @@
 use super::{executor::Executor, message::ServerRequest};
-use crate::{Request, Response, Storage};
+use crate::{QueryExecutor, Request, Response, Storage};
 
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex},
     time,
@@ -69,5 +69,13 @@ impl Server {
 
     pub async fn call_in(&self, request: Request, timeout: Duration) -> anyhow::Result<Response> {
         time::timeout(timeout, self.call(request)).await?
+    }
+
+    pub async fn query<T>(&self, query: T, env: HashMap<String, String>) -> anyhow::Result<Response>
+    where
+        T: ToString,
+    {
+        let mut runtime = QueryExecutor::new(query.to_string(), env);
+        runtime.execute(&self).await
     }
 }

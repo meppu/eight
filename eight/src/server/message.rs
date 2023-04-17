@@ -18,7 +18,7 @@ pub(super) struct ServerRequest {
     pub(super) request: Request,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Response {
     Ok,
     Value(String),

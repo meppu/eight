@@ -1,6 +1,5 @@
-use std::mem;
-
 use super::token::Token;
+use std::mem;
 
 #[derive(Debug, Default, Clone)]
 pub(super) struct Lexer {
@@ -103,4 +102,11 @@ impl Lexer {
 
         self.tokens.push(token);
     }
+}
+
+pub(super) fn lex(source: String) -> Vec<Vec<Token>> {
+    let mut lexer = Lexer::new(source);
+    lexer.execute();
+
+    lexer.collect()
 }
