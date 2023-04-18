@@ -32,7 +32,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: eight-${{ hashFiles('**/Cargo.lock') }}
+          key: eight-${{ hashFiles('**/Cargo.lock') }}-deps
 
       - name: Build project
         run: cargo build --verbose
