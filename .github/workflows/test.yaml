@@ -33,7 +33,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: eight-${{ hashFiles('**/mix.lock', '**/Cargo.lock') }}
+          key: eight-${{ hashFiles('Cargo.lock') }}
 
       - name: Build project
         run: cargo build --verbose
@@ -42,7 +42,7 @@ jobs:
         run: cargo test --verbose
 
       - name: Run cargo clippy
-        run: cargo clippy
+        run: cargo clippy -- -Dwarnings
 
       - name: Run cargo fmt
         run: cargo fmt --check
