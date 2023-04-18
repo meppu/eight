@@ -24,7 +24,6 @@ impl FromStr for Storage {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self {
             path: PathBuf::from_str(s)?,
-            ..Default::default()
         })
     }
 }

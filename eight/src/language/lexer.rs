@@ -1,17 +1,12 @@
 use super::token::Token;
 use std::mem;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 enum State {
     String,
+    #[default]
     Identifier,
     Comment,
-}
-
-impl Default for State {
-    fn default() -> Self {
-        State::Identifier
-    }
 }
 
 #[derive(Debug, Default, Clone)]

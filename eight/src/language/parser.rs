@@ -23,7 +23,7 @@ impl Parser {
         let mut command_name = command.value.chars();
 
         // check if call or cast
-        let is_cast = if command.value.ends_with("?") {
+        let is_cast = if command.value.ends_with('?') {
             command_name.next_back();
 
             true
@@ -57,7 +57,7 @@ impl Parser {
         let mut chars = value.chars();
 
         // $ stands for variable
-        if value.starts_with("$") {
+        if value.starts_with('$') {
             chars.next();
 
             if let Some(value) = self.env.get(chars.as_str()) {

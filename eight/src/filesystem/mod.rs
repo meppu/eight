@@ -1,17 +1,18 @@
 use crate::EightError;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tokio::fs;
 
 mod utils;
 
-pub(crate) fn create_path(path: &PathBuf, key: &str) -> Result<PathBuf, EightError> {
+pub(crate) fn create_path(path: &Path, key: &str) -> Result<PathBuf, EightError> {
     if key.len() < 2 {
         return Err(EightError::KeyTooShort);
-    } else if !utils::validate_key(&key) {
+    } else if !utils::validate_key(key) {
         return Err(EightError::KeyWrongFormat);
     }
 
-    let mut new_path = path.clone();
+    let mut new_path = path.to_path_buf();
+
     for list in key.chars().collect::<Vec<char>>().chunks(2) {
         new_path.push(list.iter().collect::<String>());
     }
@@ -32,10 +33,8 @@ pub(crate) async fn write(path: &mut PathBuf, content: String) -> Result<(), Eig
 
     path.pop();
 
-    if !exists(&path).await? {
-        if fs::create_dir_all(&path).await.is_err() {
-            return Err(EightError::CreateDirFail);
-        }
+    if !exists(path).await? && fs::create_dir_all(&path).await.is_err() {
+        return Err(EightError::CreateDirFail);
     }
 
     path.push(file);

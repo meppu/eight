@@ -98,6 +98,6 @@ impl Server {
         T: ToString,
     {
         let mut runtime = QueryExecutor::new(query.to_string(), env);
-        runtime.execute(&self).await
+        runtime.execute(self).await
     }
 }
