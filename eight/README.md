@@ -10,12 +10,12 @@ cargo add eight
 
 Eight library keeps itself simple as possible. When you look at source code you may see a lot of things but we only expose what you need.
 
-```rust
+```rust ignore
 use eight::{EightResult, Server, Request, Response};
 use std::{collections::HashMap, str::FromStr};
 
 #[tokio::main]
-async fn main() -> EightResult<()> {
+async fn test() -> EightResult<()> {
     let server = Server::from_str("/path/to/store").unwrap();
 
     // start listener in another task

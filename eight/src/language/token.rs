@@ -1,4 +1,4 @@
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default)]
 pub(super) struct Token {
     pub(super) value: String,
     pub(super) line: usize,

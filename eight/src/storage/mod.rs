@@ -10,7 +10,7 @@ use std::{path::PathBuf, str::FromStr};
 /// Cloning storage is cheap since it only stores path buffer inside of it.
 ///
 /// [`Server`]: ./struct.Server.html
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Storage {
     path: PathBuf,
 }

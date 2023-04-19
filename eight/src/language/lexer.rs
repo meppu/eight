@@ -1,7 +1,7 @@
 use super::token::Token;
 use std::mem;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default)]
 enum State {
     String,
     #[default]
@@ -9,7 +9,7 @@ enum State {
     Comment,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default)]
 pub(super) struct Lexer {
     source: String,
     line: usize,

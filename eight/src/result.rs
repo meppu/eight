@@ -1,9 +1,11 @@
 use crate::Response;
 use thiserror::Error;
 
+/// Short version of [`Result<T, EightError>`]
 pub type EightResult<T> = Result<T, EightError>;
 
-#[derive(Error, Debug)]
+/// Custom error type for eight.
+#[derive(Error, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum EightError {
     #[error("Key length must be longer than two (2) characters")]
     KeyTooShort,
@@ -36,6 +38,7 @@ pub enum EightError {
 }
 
 impl EightError {
+    /// Turns [`EightError`] into [`Response::Error`]
     pub fn as_response(&self) -> Response {
         Response::Error(self.to_string())
     }

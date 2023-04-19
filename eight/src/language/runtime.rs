@@ -5,7 +5,7 @@ use super::{
 use crate::{EightResult, Response, Server};
 use std::{collections::HashMap, mem};
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default)]
 pub(crate) struct QueryExecutor {
     source: String,
     env: HashMap<String, String>,

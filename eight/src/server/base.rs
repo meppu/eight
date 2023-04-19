@@ -14,8 +14,6 @@ use tokio::{
 /// Casts are just spawns commands and returns receiver channel so you can get the result later.
 /// Calls are also waits for response. You can also add timeout for calls.
 /// Server also has it is own redis-like query language.
-///
-/// [`Storage`]: ./struct.Storage.html
 #[derive(Debug, Clone)]
 pub struct Server {
     storage: Arc<Storage>,
@@ -116,7 +114,7 @@ impl Server {
     ///
     /// let receiver = server.cast(Request::Exists("key".into())).await.unwrap();
     ///
-    /// /// ...
+    /// // ...
     ///
     /// assert_eq!(receiver.await.unwrap(), Response::Value("false".into()));
     ///
