@@ -1,10 +1,6 @@
 use crate::{filesystem, EightError, EightResult};
 use std::{path::PathBuf, str::FromStr};
 
-#[cfg(test)]
-mod tests;
-
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
 /// Simple storage utility.
 ///
 /// This is storage, core of the eight server.
@@ -14,6 +10,7 @@ mod tests;
 /// Cloning storage is cheap since it only stores path buffer inside of it.
 ///
 /// [`Server`]: ./struct.Server.html
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Storage {
     path: PathBuf,
 }

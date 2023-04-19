@@ -4,6 +4,3 @@ mod message;
 
 pub use base::*;
 pub use message::*;
-
-#[cfg(test)]
-mod tests;

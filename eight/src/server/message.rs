@@ -1,6 +1,6 @@
 use tokio::sync::oneshot;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Request {
     Set(String, String),
     Get(String),
