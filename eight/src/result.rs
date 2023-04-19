@@ -1,12 +1,12 @@
 use crate::Response;
 use thiserror::Error;
 
-/// Short version of [`Result<T, EightError>`]
-pub type EightResult<T> = Result<T, EightError>;
+/// Short version of [`std::result::Result<T, self::Error>`]
+pub type Result<T> = std::result::Result<T, self::Error>;
 
 /// Custom error type for eight.
-#[derive(Error, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub enum EightError {
+#[derive(Error, Debug, Clone, PartialEq)]
+pub enum Error {
     #[error("Key length must be longer than two (2) characters")]
     KeyTooShort,
     #[error("Key must be a valid alphanumeric character")]
@@ -35,9 +35,11 @@ pub enum EightError {
     CommandNotFound,
     #[error("{0} (line {1}, column {2})")]
     CommandError(String, usize, usize),
+    #[error("You don't have permission to perform this operation")]
+    PermissionFailure,
 }
 
-impl EightError {
+impl Error {
     /// Turns [`EightError`] into [`Response::Error`]
     pub fn as_response(&self) -> Response {
         Response::Error(self.to_string())

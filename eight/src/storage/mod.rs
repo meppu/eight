@@ -1,4 +1,4 @@
-use crate::{filesystem, EightError, EightResult};
+use crate::filesystem;
 use std::{path::PathBuf, str::FromStr};
 
 /// Simple storage utility.
@@ -62,7 +62,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn set(&self, key: String, value: String) -> EightResult<()> {
+    pub async fn set(&self, key: String, value: String) -> crate::Result<()> {
         let mut path = filesystem::create_path(&self.path, &key)?;
         filesystem::write(&mut path, value).await
     }
@@ -90,7 +90,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn get(&self, key: String) -> EightResult<String> {
+    pub async fn get(&self, key: String) -> crate::Result<String> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::read(&path).await
     }
@@ -117,7 +117,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn delete(&self, key: String) -> EightResult<()> {
+    pub async fn delete(&self, key: String) -> crate::Result<()> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::delete(&path).await
     }
@@ -145,7 +145,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn increment(&self, key: String, add: usize) -> EightResult<usize> {
+    pub async fn increment(&self, key: String, add: usize) -> crate::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
@@ -156,7 +156,7 @@ impl Storage {
             filesystem::write(&mut path, new.to_string()).await?;
             Ok(new)
         } else {
-            Err(EightError::UIntParseFail)
+            Err(crate::Error::UIntParseFail)
         }
     }
 
@@ -183,7 +183,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn decrement(&self, key: String, add: usize) -> EightResult<usize> {
+    pub async fn decrement(&self, key: String, add: usize) -> crate::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
@@ -194,7 +194,7 @@ impl Storage {
             filesystem::write(&mut path, new.to_string()).await?;
             Ok(new)
         } else {
-            Err(EightError::UIntParseFail)
+            Err(crate::Error::UIntParseFail)
         }
     }
 
@@ -222,7 +222,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn exists(&self, key: String) -> EightResult<bool> {
+    pub async fn exists(&self, key: String) -> crate::Result<bool> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::exists(&path).await
     }
@@ -247,7 +247,7 @@ impl Storage {
     /// }
     /// # });
     /// ```
-    pub async fn flush(&self) -> EightResult<()> {
+    pub async fn flush(&self) -> crate::Result<()> {
         filesystem::flush(&self.path).await
     }
 }

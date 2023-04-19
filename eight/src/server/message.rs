@@ -1,7 +1,7 @@
 use tokio::sync::oneshot;
 
 /// Allows you to send request to server.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Request {
     /// Set request with key and value.
     Set(String, String),
@@ -26,7 +26,7 @@ pub(super) struct ServerRequest {
 }
 
 /// Allows you to get response from server.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Response {
     /// Success, no value returned from server.
     Ok,

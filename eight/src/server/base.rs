@@ -1,5 +1,5 @@
 use super::{executor::Executor, message::ServerRequest};
-use crate::{language::QueryExecutor, EightError, EightResult, Request, Response, Storage};
+use crate::{language::QueryExecutor, Permission, Request, Response, Storage};
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex},
@@ -19,6 +19,7 @@ pub struct Server {
     storage: Arc<Storage>,
     sender: mpsc::UnboundedSender<ServerRequest>,
     receiver: Arc<Mutex<mpsc::UnboundedReceiver<ServerRequest>>>,
+    permission: Permission,
 }
 
 impl FromStr for Server {
@@ -55,7 +56,32 @@ impl Server {
             storage: Arc::new(storage),
             sender,
             receiver: Arc::new(Mutex::new(receiver)),
+            permission: Default::default(),
         }
+    }
+
+    /// Set server permissions.
+    ///
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// use eight::{Server, Request, Response, Permission};
+    /// use std::str::FromStr;
+    ///
+    /// let mut server = Server::from_str("./permission_test").unwrap();
+    /// server.set_permission(Permission::Guest);
+    /// server.start().await;
+    ///
+    /// let response = server.call(Request::Set("key".into(), "value".into())).await.unwrap();
+    /// let Response::Error(_) = response else {
+    ///   panic!("Must return an error");
+    /// };
+    ///
+    /// server.set_permission(Permission::Owner);
+    /// server.call(Request::Flush).await;
+    /// # });
+    /// ```
+    pub fn set_permission(&mut self, permission: Permission) {
+        self.permission = permission;
     }
 
     /// Run listener in another task so flow execution can continue.
@@ -84,8 +110,13 @@ impl Server {
     pub async fn listen(&self) {
         while let Some(request) = self.receiver.lock().await.recv().await {
             let ServerRequest { sender, request } = request;
-            let storage = Arc::clone(&self.storage);
 
+            if let Err(error) = self.permission.allowed(&request) {
+                sender.send(error.as_response()).ok();
+                continue;
+            }
+
+            let storage = Arc::clone(&self.storage);
             tokio::spawn(async move {
                 let response = match request {
                     Request::Set(key, value) => Executor::set(storage, key, value).await,
@@ -121,12 +152,12 @@ impl Server {
     /// # server.call(Request::Flush).await;
     /// # });
     /// ```
-    pub async fn cast(&self, request: Request) -> EightResult<oneshot::Receiver<Response>> {
+    pub async fn cast(&self, request: Request) -> crate::Result<oneshot::Receiver<Response>> {
         let (sender, receiver) = oneshot::channel();
         let request = ServerRequest { sender, request };
 
         if self.sender.send(request).is_err() {
-            Err(EightError::SendFail)
+            Err(crate::Error::SendFail)
         } else {
             Ok(receiver)
         }
@@ -149,20 +180,20 @@ impl Server {
     /// # server.call(Request::Flush).await;
     /// # });
     /// ```
-    pub async fn call(&self, request: Request) -> EightResult<Response> {
+    pub async fn call(&self, request: Request) -> crate::Result<Response> {
         if let Ok(value) = self.cast(request).await?.await {
             Ok(value)
         } else {
-            Err(EightError::RecvFail)
+            Err(crate::Error::RecvFail)
         }
     }
 
     /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
-    pub async fn call_in(&self, request: Request, timeout: Duration) -> EightResult<Response> {
+    pub async fn call_in(&self, request: Request, timeout: Duration) -> crate::Result<Response> {
         if let Ok(value) = time::timeout(timeout, self.call(request)).await {
             value
         } else {
-            Err(EightError::RecvTimeout)
+            Err(crate::Error::RecvTimeout)
         }
     }
 
@@ -196,7 +227,7 @@ impl Server {
         &self,
         query: T,
         env: HashMap<String, String>,
-    ) -> EightResult<Vec<Response>>
+    ) -> crate::Result<Vec<Response>>
     where
         T: ToString,
     {
