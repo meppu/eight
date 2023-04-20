@@ -1,5 +1,11 @@
 use tokio::sync::oneshot;
 
+#[derive(Debug)]
+pub(super) struct ServerRequest {
+    pub(super) sender: oneshot::Sender<Response>,
+    pub(super) request: Request,
+}
+
 /// Allows you to send request to server.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Request {
@@ -17,12 +23,6 @@ pub enum Request {
     Decrement(String, usize),
     /// Flush request. Returns [`Response::Ok`] on success.
     Flush,
-}
-
-#[derive(Debug)]
-pub(super) struct ServerRequest {
-    pub(super) sender: oneshot::Sender<Response>,
-    pub(super) request: Request,
 }
 
 /// Allows you to get response from server.

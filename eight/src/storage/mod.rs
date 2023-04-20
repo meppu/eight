@@ -71,8 +71,6 @@ impl Storage {
     ///
     /// This function reads file and returns it is content as string.
     ///
-    /// # Examples
-    ///
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::Storage;
@@ -99,8 +97,6 @@ impl Storage {
     ///
     /// This function removes file and returns nothing.
     ///
-    /// # Examples
-    ///
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::Storage;
@@ -125,8 +121,6 @@ impl Storage {
     /// Checks if key exists
     ///
     /// This function returns a boolean on success.
-    ///
-    /// # Examples
     ///
     /// ```
     /// # tokio_test::block_on(async {
@@ -154,8 +148,6 @@ impl Storage {
     /// Find value and increment by given value.
     ///
     /// This function reads file, trying to parse it as unsigned integer, updates it and returns new value as unsigned integer.
-    ///
-    /// # Examples
     ///
     /// ```
     /// # tokio_test::block_on(async {
@@ -193,8 +185,6 @@ impl Storage {
     ///
     /// This function reads file, trying to parse it as unsigned integer, updates it and returns new value as unsigned integer.
     ///
-    /// # Examples
-    ///
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::Storage;
@@ -228,8 +218,6 @@ impl Storage {
     }
 
     /// Removes everything from storage.
-    ///
-    /// # Examples
     ///
     /// ```
     /// # tokio_test::block_on(async {

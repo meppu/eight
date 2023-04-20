@@ -9,3 +9,6 @@ mod storage;
 pub use result::*;
 pub use server::*;
 pub use storage::*;
+
+#[cfg(feature = "macros")]
+mod macros;
