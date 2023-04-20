@@ -122,6 +122,35 @@ impl Storage {
         filesystem::delete(&path).await
     }
 
+    /// Checks if key exists
+    ///
+    /// This function returns a boolean on success.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// use eight::Storage;
+    /// use std::str::FromStr;
+    ///
+    /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
+    ///
+    /// storage.set("some".into(), "test".into()).await;
+    ///
+    /// match storage.exists("some".into()).await {
+    ///   Ok(true) => storage.delete("some".into()).await.unwrap(),
+    ///   Ok(false) => panic!("it doesn't exists"),
+    ///   Err(error) => panic!("{}", error.to_string()),
+    /// }
+    ///
+    /// # storage.flush().await;
+    /// # });
+    /// ```
+    pub async fn exists(&self, key: String) -> crate::Result<bool> {
+        let path = filesystem::create_path(&self.path, &key)?;
+        filesystem::exists(&path).await
+    }
+
     /// Find value and increment by given value.
     ///
     /// This function reads file, trying to parse it as unsigned integer, updates it and returns new value as unsigned integer.
@@ -196,35 +225,6 @@ impl Storage {
         } else {
             Err(crate::Error::UIntParseFail)
         }
-    }
-
-    /// Checks if key exists
-    ///
-    /// This function returns a boolean on success.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # tokio_test::block_on(async {
-    /// use eight::Storage;
-    /// use std::str::FromStr;
-    ///
-    /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
-    ///
-    /// storage.set("some".into(), "test".into()).await;
-    ///
-    /// match storage.exists("some".into()).await {
-    ///   Ok(true) => storage.delete("some".into()).await.unwrap(),
-    ///   Ok(false) => panic!("it doesn't exists"),
-    ///   Err(error) => panic!("{}", error.to_string()),
-    /// }
-    ///
-    /// # storage.flush().await;
-    /// # });
-    /// ```
-    pub async fn exists(&self, key: String) -> crate::Result<bool> {
-        let path = filesystem::create_path(&self.path, &key)?;
-        filesystem::exists(&path).await
     }
 
     /// Removes everything from storage.

@@ -40,7 +40,7 @@ pub enum Error {
 }
 
 impl Error {
-    /// Turns [`EightError`] into [`Response::Error`]
+    /// Turns [`enum@Error`] into [`Response::Error`]
     pub fn as_response(&self) -> Response {
         Response::Error(self.to_string())
     }

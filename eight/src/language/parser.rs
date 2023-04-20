@@ -36,8 +36,8 @@ impl Parser {
             "get" => self.parse_get(tokens),
             "delete" => self.parse_delete(tokens),
             "exists" => self.parse_exists(tokens),
-            "inc" => self.parse_increment(tokens),
-            "dec" => self.parse_decrement(tokens),
+            "incr" => self.parse_increment(tokens),
+            "decr" => self.parse_decrement(tokens),
             "flush" => self.parse_flush(tokens),
             _ => Err(crate::Error::CommandError(
                 "Command not found".into(),

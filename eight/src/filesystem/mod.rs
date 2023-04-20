@@ -19,14 +19,6 @@ pub(crate) fn create_path(path: &Path, key: &str) -> crate::Result<PathBuf> {
     Ok(new_path)
 }
 
-pub(crate) async fn exists(path: &PathBuf) -> crate::Result<bool> {
-    if let Ok(value) = fs::try_exists(&path).await {
-        Ok(value)
-    } else {
-        Err(crate::Error::CheckExistsFail)
-    }
-}
-
 pub(crate) async fn write(path: &mut PathBuf, content: String) -> crate::Result<()> {
     let file = path.file_name().unwrap().to_str().unwrap().to_string();
 
@@ -58,6 +50,14 @@ pub(crate) async fn delete(path: &PathBuf) -> crate::Result<()> {
         Ok(value)
     } else {
         Err(crate::Error::FileRemoveFail)
+    }
+}
+
+pub(crate) async fn exists(path: &PathBuf) -> crate::Result<bool> {
+    if let Ok(value) = fs::try_exists(&path).await {
+        Ok(value)
+    } else {
+        Err(crate::Error::CheckExistsFail)
     }
 }
 

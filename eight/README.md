@@ -8,7 +8,7 @@ cargo add eight
 
 ## Simple Usage
 
-Eight library keeps itself simple as possible. When you look at source code you may see a lot of things but we only expose what you need.
+Eight library tries to keep itself simple as possible. When you look at source code you may see a lot of things but we only expose what you need.
 
 ```rust ignore
 use eight::{Server, Request, Response};
@@ -35,7 +35,7 @@ async fn test() -> eight::Result<()> {
     ", env).await?;
 
     assert_eq!(results.len(), 2);
-    assert_eq!(results[0], Response::Value("hello world".into()));
+    assert_eq!(results[0], Response::Text("hello world".into()));
     assert_eq!(results[1], Response::Ok);
 
     // clear database before existing

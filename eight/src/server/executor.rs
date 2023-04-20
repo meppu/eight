@@ -13,7 +13,7 @@ impl Executor {
 
     pub async fn get(storage: Arc<Storage>, key: String) -> Response {
         match storage.get(key).await {
-            Ok(value) => Response::Value(value),
+            Ok(value) => Response::Text(value),
             Err(error) => error.as_response(),
         }
     }
@@ -27,21 +27,21 @@ impl Executor {
 
     pub async fn exists(storage: Arc<Storage>, key: String) -> Response {
         match storage.exists(key).await {
-            Ok(value) => Response::Value(value.to_string()),
+            Ok(value) => Response::Boolean(value),
             Err(error) => error.as_response(),
         }
     }
 
     pub async fn increment(storage: Arc<Storage>, key: String, value: usize) -> Response {
         match storage.increment(key, value).await {
-            Ok(new) => Response::Value(new.to_string()),
+            Ok(new) => Response::Number(new),
             Err(error) => error.as_response(),
         }
     }
 
     pub async fn decrement(storage: Arc<Storage>, key: String, value: usize) -> Response {
         match storage.decrement(key, value).await {
-            Ok(new) => Response::Value(new.to_string()),
+            Ok(new) => Response::Number(new),
             Err(error) => error.as_response(),
         }
     }

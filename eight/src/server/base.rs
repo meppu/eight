@@ -147,7 +147,7 @@ impl Server {
     ///
     /// // ...
     ///
-    /// assert_eq!(receiver.await.unwrap(), Response::Value("false".into()));
+    /// assert_eq!(receiver.await.unwrap(), Response::Boolean(false));
     ///
     /// # server.call(Request::Flush).await;
     /// # });
@@ -175,7 +175,7 @@ impl Server {
     ///
     /// let response = server.call(Request::Exists("key".into())).await.unwrap();
     ///
-    /// assert_eq!(response, Response::Value("false".into()));
+    /// assert_eq!(response, Response::Boolean(false));
     ///
     /// # server.call(Request::Flush).await;
     /// # });
@@ -218,7 +218,7 @@ impl Server {
     ///
     /// assert_eq!(results.len(), 2);
     /// assert_eq!(results[0], Response::Ok);
-    /// assert_eq!(results[1], Response::Value("hello world!".to_string()));
+    /// assert_eq!(results[1], Response::Text("hello world!".to_string()));
     ///
     /// # server.call(Request::Flush).await;
     /// # });
