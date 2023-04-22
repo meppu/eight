@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 futures = "0.3.28"
 thiserror = "1.0.40"
-tokio = { version = "1.27.0", features = ["rt", "macros", "fs", "sync", "time"] }
+tokio = { version = "1.27.0", features = ["fs", "sync", "time"] }
 
 [dev-dependencies]
 tokio-test = "0.4.2"
