@@ -8,6 +8,9 @@ pub(super) struct ServerRequest {
 
 /// Allows you to send request to server.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", content = "value"))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 pub enum Request {
     /// Set request with key and value. Returns [`Response::Ok`] on success.
     Set(String, String),
@@ -29,6 +32,9 @@ pub enum Request {
 
 /// Allows you to get response from server.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", content = "value"))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 pub enum Response {
     /// Success, no value returned from server.
     Ok,

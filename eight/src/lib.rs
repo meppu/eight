@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-pub mod filesystem;
+mod filesystem;
 mod language;
 mod result;
 mod server;
