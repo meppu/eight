@@ -217,6 +217,29 @@ impl Storage {
         }
     }
 
+    /// Search key from storage.
+    ///
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// use eight::Storage;
+    /// use std::str::FromStr;
+    ///
+    /// let storage = Storage::from_str("./search_storage_test").unwrap();
+    ///
+    /// for i in 1..100 {
+    ///   storage.set(format!("result{}", i), "test".into()).await.unwrap();
+    /// }
+    ///
+    /// let results = storage.search("res").await.unwrap();
+    /// assert_eq!(results.len(), 99);
+    ///
+    /// # storage.flush().await;
+    /// # });
+    /// ```
+    pub async fn search(&self, key: String) -> crate::Result<Vec<String>> {
+        filesystem::search(&self.path, &key).await
+    }
+
     /// Removes everything from storage.
     ///
     /// ```
@@ -226,8 +249,8 @@ impl Storage {
     ///
     /// let storage = Storage::from_str("./flush_storage_test").unwrap();
     ///
-    /// for i in 1..100 {
-    ///   storage.set(i.to_string(), "test".into()).await;
+    /// for i in 1..1000 {
+    ///   storage.set(format!("result{}", i), "test".into()).await.unwrap();
     /// }
     ///
     /// if let Err(error) = storage.flush().await {

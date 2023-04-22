@@ -22,7 +22,8 @@ impl Permission {
             Request::Set(_, _)
             | Request::Delete(_)
             | Request::Increment(_, _)
-            | Request::Decrement(_, _) => self == &Permission::Admin || self == &Permission::Owner,
+            | Request::Decrement(_, _)
+            | Request::Search(_) => self == &Permission::Admin || self == &Permission::Owner,
             // owner only
             Request::Flush => self == &Permission::Owner,
         }

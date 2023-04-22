@@ -21,6 +21,8 @@ pub enum Request {
     Increment(String, usize),
     /// Decrement request with key and decrement value. Returns [`Response::Number`] on success.
     Decrement(String, usize),
+    /// Search key. Returns [`Response::TextList`] on success.
+    Search(String),
     /// Flush request. Returns [`Response::Ok`] on success.
     Flush,
 }
@@ -36,8 +38,8 @@ pub enum Response {
     Number(usize),
     /// Success, with bool returned from server.
     Boolean(bool),
-    /// Success, with list returned from server.
-    List(Vec<String>),
+    /// Success, with text list returned from server.
+    TextList(Vec<String>),
     /// Error, with description returned from server.
     Error(String),
 }

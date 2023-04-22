@@ -46,6 +46,13 @@ impl Executor {
         }
     }
 
+    pub async fn search(storage: Arc<Storage>, key: String) -> Response {
+        match storage.search(key).await {
+            Ok(value) => Response::TextList(value),
+            Err(error) => error.as_response(),
+        }
+    }
+
     pub async fn flush(storage: Arc<Storage>) -> Response {
         match storage.flush().await {
             Ok(_) => Response::Ok,

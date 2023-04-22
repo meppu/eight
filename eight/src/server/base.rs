@@ -125,6 +125,7 @@ impl Server {
                     Request::Exists(key) => Executor::exists(storage, key).await,
                     Request::Increment(key, num) => Executor::increment(storage, key, num).await,
                     Request::Decrement(key, num) => Executor::decrement(storage, key, num).await,
+                    Request::Search(key) => Executor::search(storage, key).await,
                     Request::Flush => Executor::flush(storage).await,
                 };
 

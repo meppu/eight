@@ -39,6 +39,7 @@ impl Parser {
             "incr" => self.parse_increment(tokens),
             "decr" => self.parse_decrement(tokens),
             "flush" => self.parse_flush(tokens),
+            "search" => self.parse_search(tokens),
             _ => Err(crate::Error::CommandError(
                 "Command not found".into(),
                 command.line,
@@ -172,6 +173,19 @@ impl Parser {
                 value_token.column,
             ))
         }
+    }
+
+    fn parse_search(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+        if tokens.len() != 2 {
+            return Err(crate::Error::CommandError(
+                "Search command requires one (1) argument".into(),
+                tokens[0].line,
+                tokens[0].column,
+            ));
+        }
+
+        let key = self.fetch_env(&tokens[1].value);
+        Ok(Request::Search(key))
     }
 
     fn parse_flush(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
