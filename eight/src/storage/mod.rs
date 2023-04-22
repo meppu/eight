@@ -230,7 +230,7 @@ impl Storage {
     ///   storage.set(format!("result{}", i), "test".into()).await.unwrap();
     /// }
     ///
-    /// let results = storage.search("res").await.unwrap();
+    /// let results = storage.search("res".into()).await.unwrap();
     /// assert_eq!(results.len(), 99);
     ///
     /// # storage.flush().await;
