@@ -2,16 +2,27 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use eight::Server;
+use clap::Parser;
+use eight::{Permission, Server};
 use std::{net::SocketAddr, str::FromStr};
 
+mod cli;
 mod http;
 mod query;
 
 #[tokio::main]
-async fn main() {
-    let server = Server::from_str("./test").unwrap();
+async fn main() -> Result<(), &'static str> {
+    let args = cli::Args::parse();
+
+    let server = Server::from_str(&args.directory).unwrap();
     server.start().await;
+
+    match args.permission {
+        0 => server.set_permission(Permission::Guest).await,
+        1 => server.set_permission(Permission::Admin).await,
+        2 => server.set_permission(Permission::Owner).await,
+        _ => return Err("Invalid permission value. For more information, try '--help'."),
+    }
 
     let app = Router::new()
         .route("/", get(root))
@@ -23,6 +34,8 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
+
+    Ok(())
 }
 
 async fn root() -> &'static str {
