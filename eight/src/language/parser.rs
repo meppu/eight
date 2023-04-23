@@ -38,8 +38,9 @@ impl Parser {
             "exists" => self.parse_exists(tokens),
             "incr" => self.parse_increment(tokens),
             "decr" => self.parse_decrement(tokens),
-            "flush" => self.parse_flush(tokens),
             "search" => self.parse_search(tokens),
+            "flush" => self.parse_flush(tokens),
+            "downgrade" => self.parse_downgrade(tokens),
             _ => Err(crate::Error::CommandError(
                 "Command not found".into(),
                 command.line,
@@ -198,5 +199,17 @@ impl Parser {
         }
 
         Ok(Request::Flush)
+    }
+
+    fn parse_downgrade(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+        if tokens.len() != 1 {
+            return Err(crate::Error::CommandError(
+                "Downgrade permission command can't take any value".into(),
+                tokens[0].line,
+                tokens[0].column,
+            ));
+        }
+
+        Ok(Request::DowngradePermission)
     }
 }

@@ -28,6 +28,8 @@ pub enum Request {
     Search(String),
     /// Flush request. Returns [`Response::Ok`] on success.
     Flush,
+    /// Downgrade permission. Returns [`Response::Ok`] on success.
+    DowngradePermission,
 }
 
 /// Allows you to get response from server.

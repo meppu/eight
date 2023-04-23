@@ -1,7 +1,7 @@
 use crate::Request;
 
 /// Permissions for server.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum Permission {
     /// They can't modify contents in database (read-only).
     Guest,
@@ -17,7 +17,7 @@ impl Permission {
     pub fn is_allowed(&self, request: &Request) -> bool {
         match request {
             // read-only
-            Request::Get(_) | Request::Exists(_) => true,
+            Request::Get(_) | Request::Exists(_) | Request::DowngradePermission => true,
             // requires admin or higher
             Request::Set(_, _)
             | Request::Delete(_)
@@ -35,6 +35,15 @@ impl Permission {
             Ok(())
         } else {
             Err(crate::Error::PermissionFailure)
+        }
+    }
+
+    /// Downgrade permission.
+    pub fn lower(&self) -> Self {
+        match self {
+            Permission::Guest => Permission::Guest,
+            Permission::Admin => Permission::Guest,
+            Permission::Owner => Permission::Admin,
         }
     }
 }

@@ -2,7 +2,7 @@ use super::{executor::Executor, message::ServerRequest};
 use crate::{language::QueryExecutor, Permission, Request, Response, Storage};
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
-    sync::{mpsc, oneshot, Mutex},
+    sync::{mpsc, oneshot, Mutex, RwLock},
     time,
 };
 
@@ -19,7 +19,7 @@ pub struct Server {
     storage: Arc<Storage>,
     sender: mpsc::UnboundedSender<ServerRequest>,
     receiver: Arc<Mutex<mpsc::UnboundedReceiver<ServerRequest>>>,
-    permission: Permission,
+    permission: Arc<RwLock<Permission>>,
 }
 
 impl FromStr for Server {
@@ -67,8 +67,9 @@ impl Server {
     /// use eight::{Server, Request, Response, Permission};
     /// use std::str::FromStr;
     ///
-    /// let mut server = Server::from_str("./permission_test").unwrap();
-    /// server.set_permission(Permission::Guest);
+    /// let server = Server::from_str("./permission_test").unwrap();
+    ///
+    /// server.set_permission(Permission::Guest).await;
     /// server.start().await;
     ///
     /// let response = server.call(Request::Set("key".into(), "value".into())).await.unwrap();
@@ -76,12 +77,18 @@ impl Server {
     ///   panic!("Must return an error");
     /// };
     ///
-    /// server.set_permission(Permission::Owner);
+    /// server.set_permission(Permission::Owner).await;
+    ///
+    /// let response = server.call(Request::Set("key".into(), "value".into())).await.unwrap();
+    /// let Response::Ok = response else {
+    ///   panic!("Must return an error");
+    /// };
+    ///
     /// server.call(Request::Flush).await;
     /// # });
     /// ```
-    pub fn set_permission(&mut self, permission: Permission) {
-        self.permission = permission;
+    pub async fn set_permission(&self, permission: Permission) {
+        *self.permission.write().await = permission;
     }
 
     /// Run listener in another task so flow execution can continue.
@@ -94,8 +101,7 @@ impl Server {
     /// let server = Server::from_str("/path/to/store").unwrap();
     /// server.start().await;
     ///
-    /// assert_eq!(2, 2);
-    ///
+    /// # assert_eq!(2, 2);
     /// # });
     /// ```
     pub async fn start(&self) {
@@ -111,13 +117,15 @@ impl Server {
         while let Some(request) = self.receiver.lock().await.recv().await {
             let ServerRequest { sender, request } = request;
 
-            if let Err(error) = self.permission.allowed(&request) {
-                sender.send(error.as_response()).ok();
-                continue;
-            }
-
             let storage = Arc::clone(&self.storage);
+            let permission = Arc::clone(&self.permission);
+
             tokio::spawn(async move {
+                if let Err(error) = permission.read().await.allowed(&request) {
+                    sender.send(error.as_response()).ok();
+                    return;
+                }
+
                 let response = match request {
                     Request::Set(key, value) => Executor::set(storage, key, value).await,
                     Request::Get(key) => Executor::get(storage, key).await,
@@ -127,6 +135,12 @@ impl Server {
                     Request::Decrement(key, num) => Executor::decrement(storage, key, num).await,
                     Request::Search(key) => Executor::search(storage, key).await,
                     Request::Flush => Executor::flush(storage).await,
+                    Request::DowngradePermission => {
+                        let mut permission = permission.write().await;
+                        *permission = permission.lower();
+
+                        Response::Ok
+                    }
                 };
 
                 sender.send(response).ok();
