@@ -105,17 +105,15 @@ impl Lexer {
     fn make_token(&mut self) {
         self.state = State::default();
 
-        if self.temp.is_empty() {
-            return;
+        if !self.temp.is_empty() {
+            let token = Token {
+                value: mem::take(&mut self.temp),
+                line: self.line,
+                column: self.column,
+            };
+
+            self.tokens.push(token);
         }
-
-        let token = Token {
-            value: mem::take(&mut self.temp),
-            line: self.line,
-            column: self.column,
-        };
-
-        self.tokens.push(token);
     }
 }
 

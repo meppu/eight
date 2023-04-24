@@ -16,7 +16,7 @@ use tokio::{
 /// Server also has it is own redis-like query language.
 #[derive(Debug, Clone)]
 pub struct Server {
-    storage: Arc<Storage>,
+    executor: Arc<Executor>,
     sender: mpsc::UnboundedSender<ServerRequest>,
     receiver: Arc<Mutex<mpsc::UnboundedReceiver<ServerRequest>>>,
     permission: Arc<RwLock<Permission>>,
@@ -53,7 +53,7 @@ impl Server {
         let (sender, receiver) = mpsc::unbounded_channel();
 
         Self {
-            storage: Arc::new(storage),
+            executor: Arc::new(Executor::new(storage)),
             sender,
             receiver: Arc::new(Mutex::new(receiver)),
             permission: Default::default(),
@@ -117,33 +117,32 @@ impl Server {
         while let Some(request) = self.receiver.lock().await.recv().await {
             let ServerRequest { sender, request } = request;
 
-            let storage = Arc::clone(&self.storage);
+            let executor = Arc::clone(&self.executor);
             let permission = Arc::clone(&self.permission);
 
             tokio::spawn(async move {
                 if let Err(error) = permission.read().await.allowed(&request) {
                     sender.send(error.as_response()).ok();
-                    return;
+                } else {
+                    let response = match request {
+                        Request::Set(key, value) => executor.set(key, value).await,
+                        Request::Get(key) => executor.get(key).await,
+                        Request::Delete(key) => executor.delete(key).await,
+                        Request::Exists(key) => executor.exists(key).await,
+                        Request::Increment(key, num) => executor.increment(key, num).await,
+                        Request::Decrement(key, num) => executor.decrement(key, num).await,
+                        Request::Search(key) => executor.search(key).await,
+                        Request::Flush => executor.flush().await,
+                        Request::DowngradePermission => {
+                            let mut permission = permission.write().await;
+                            *permission = permission.lower();
+
+                            Response::Ok
+                        }
+                    };
+
+                    sender.send(response).ok();
                 }
-
-                let response = match request {
-                    Request::Set(key, value) => Executor::set(storage, key, value).await,
-                    Request::Get(key) => Executor::get(storage, key).await,
-                    Request::Delete(key) => Executor::delete(storage, key).await,
-                    Request::Exists(key) => Executor::exists(storage, key).await,
-                    Request::Increment(key, num) => Executor::increment(storage, key, num).await,
-                    Request::Decrement(key, num) => Executor::decrement(storage, key, num).await,
-                    Request::Search(key) => Executor::search(storage, key).await,
-                    Request::Flush => Executor::flush(storage).await,
-                    Request::DowngradePermission => {
-                        let mut permission = permission.write().await;
-                        *permission = permission.lower();
-
-                        Response::Ok
-                    }
-                };
-
-                sender.send(response).ok();
             });
         }
     }

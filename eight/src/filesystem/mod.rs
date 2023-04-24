@@ -1,8 +1,5 @@
 use futures::{stream, StreamExt};
-use std::{
-    mem,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 use tokio::fs;
 
 mod utils;
@@ -38,43 +35,33 @@ pub(crate) async fn write(path: &mut PathBuf, content: String) -> crate::Result<
 
     path.push(file);
 
-    if fs::write(&path, content).await.is_err() {
-        Err(crate::Error::FileWriteFail)
-    } else {
-        Ok(())
-    }
+    fs::write(&path, content)
+        .await
+        .map_err(|_| crate::Error::FileWriteFail)
 }
 
 pub(crate) async fn read(path: &PathBuf) -> crate::Result<String> {
-    if let Ok(value) = fs::read_to_string(path).await {
-        Ok(value)
-    } else {
-        Err(crate::Error::FileReadFail)
-    }
+    fs::read_to_string(path)
+        .await
+        .map_err(|_| crate::Error::FileReadFail)
 }
 
 pub(crate) async fn delete(path: &PathBuf) -> crate::Result<()> {
-    if let Ok(value) = fs::remove_file(path).await {
-        Ok(value)
-    } else {
-        Err(crate::Error::FileRemoveFail)
-    }
+    fs::remove_file(path)
+        .await
+        .map_err(|_| crate::Error::FileRemoveFail)
 }
 
 pub(crate) async fn exists(path: &PathBuf) -> crate::Result<bool> {
-    if let Ok(value) = fs::try_exists(&path).await {
-        Ok(value)
-    } else {
-        Err(crate::Error::CheckExistsFail)
-    }
+    fs::try_exists(path)
+        .await
+        .map_err(|_| crate::Error::CheckExistsFail)
 }
 
 pub(crate) async fn flush(path: &PathBuf) -> crate::Result<()> {
-    if let Ok(value) = fs::remove_dir_all(path).await {
-        Ok(value)
-    } else {
-        Err(crate::Error::DirRemoveFail)
-    }
+    fs::remove_dir_all(path)
+        .await
+        .map_err(|_| crate::Error::DirRemoveFail)
 }
 
 pub(crate) async fn search(root: &Path, key: &str) -> crate::Result<Vec<String>> {
@@ -110,7 +97,7 @@ pub(crate) async fn search(root: &Path, key: &str) -> crate::Result<Vec<String>>
 
             None
         })
-        .map(|path| tokio::spawn(async move { search_recursive(path, deep) }))
+        .map(|path| tokio::spawn(async move { utils::search_recursive(path, deep) }))
         .buffer_unordered(MAXIMUM_PARALLEL_SEARCH);
 
     let results = tasks
@@ -125,36 +112,4 @@ pub(crate) async fn search(root: &Path, key: &str) -> crate::Result<Vec<String>>
         .concat();
 
     Ok(results)
-}
-
-fn search_recursive(path: PathBuf, deep: usize) -> Vec<String> {
-    let Ok(paths) = path.read_dir() else {
-        return Vec::new();
-    };
-
-    let mut collected = Vec::new();
-
-    for entry in paths.flatten() {
-        let mut path = entry.path();
-
-        if path.is_dir() {
-            collected.extend(search_recursive(path, deep + 1));
-        } else if path.is_file() {
-            path.pop();
-
-            let mut iter = path.iter();
-            let file = (0..deep + 1)
-                .map(|_| iter.next_back().unwrap().to_str().unwrap().to_string())
-                .collect::<Vec<_>>()
-                .iter_mut()
-                .rev()
-                .map(mem::take)
-                .collect::<Vec<_>>()
-                .join("");
-
-            collected.push(file);
-        }
-    }
-
-    collected
 }

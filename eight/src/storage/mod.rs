@@ -166,19 +166,17 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn increment(&self, key: String, add: usize) -> crate::Result<usize> {
+    pub async fn increment(&self, key: String, num: usize) -> crate::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
+        let new = raw
+            .parse::<usize>()
+            .map_err(|_| crate::Error::UIntParseFail)?
+            + num;
 
-        if let Ok(value) = raw.parse::<usize>() {
-            let new = value + add;
-
-            filesystem::write(&mut path, new.to_string()).await?;
-            Ok(new)
-        } else {
-            Err(crate::Error::UIntParseFail)
-        }
+        filesystem::write(&mut path, new.to_string()).await?;
+        Ok(new)
     }
 
     /// Find value and decrement by given value.
@@ -202,19 +200,17 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn decrement(&self, key: String, add: usize) -> crate::Result<usize> {
+    pub async fn decrement(&self, key: String, num: usize) -> crate::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
+        let new = raw
+            .parse::<usize>()
+            .map_err(|_| crate::Error::UIntParseFail)?
+            - num;
 
-        if let Ok(value) = raw.parse::<usize>() {
-            let new = value - add;
-
-            filesystem::write(&mut path, new.to_string()).await?;
-            Ok(new)
-        } else {
-            Err(crate::Error::UIntParseFail)
-        }
+        filesystem::write(&mut path, new.to_string()).await?;
+        Ok(new)
     }
 
     /// Search key from storage.
