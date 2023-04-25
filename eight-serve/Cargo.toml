@@ -9,7 +9,7 @@ edition = "2021"
 axum = { version = "0.6", features = ["ws"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
-eight = { path = "../eight", features = ["full"] }
+eight = { path = "../eight", features = ["serde", "embedded"] }
 clap = { version = "4.2", features = ["derive"] }
 futures = "0.3"
 serde_json = "1"

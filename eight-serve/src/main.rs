@@ -4,7 +4,7 @@ use axum::{
     Router,
 };
 use clap::Parser;
-use eight::{Permission, Server};
+use eight::embedded::{Permission, Server};
 use std::{net::SocketAddr, str::FromStr};
 
 mod cli;

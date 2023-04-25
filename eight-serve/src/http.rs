@@ -1,6 +1,6 @@
 use crate::query::{QueryRequest, QueryResponse};
 use axum::{extract::State, http::StatusCode, Json};
-use eight::Server;
+use eight::embedded::Server;
 
 pub async fn run_query(
     State(database): State<Server>,

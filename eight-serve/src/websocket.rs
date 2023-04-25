@@ -6,7 +6,7 @@ use axum::{
     },
     response::IntoResponse,
 };
-use eight::Server;
+use eight::embedded::Server;
 use futures::{
     sink::SinkExt,
     stream::{SplitSink, StreamExt},

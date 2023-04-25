@@ -1,4 +1,4 @@
-use eight::Response;
+use eight::messaging::Response;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
