@@ -9,6 +9,7 @@ use std::{net::SocketAddr, str::FromStr};
 mod cli;
 mod http;
 mod query;
+mod websocket;
 
 #[tokio::main]
 async fn main() -> Result<(), &'static str> {
@@ -27,6 +28,7 @@ async fn main() -> Result<(), &'static str> {
     let app = Router::new()
         .route("/", get(root))
         .route("/query", post(http::run_query))
+        .route("/rpc", get(websocket::handle_connection))
         .with_state(server);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

@@ -265,7 +265,9 @@ dependencies = [
  "axum",
  "clap",
  "eight",
+ "futures",
  "serde",
+ "serde_json",
  "tokio",
 ]
 
