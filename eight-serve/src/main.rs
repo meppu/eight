@@ -1,4 +1,5 @@
 use axum::{
+    response::Redirect,
     routing::{get, post},
     Router,
 };
@@ -26,9 +27,9 @@ async fn main() -> Result<(), &'static str> {
     }
 
     let app = Router::new()
-        .route("/", get(root))
         .route("/query", post(http::run_query))
         .route("/rpc", get(websocket::handle_connection))
+        .fallback(|| async { Redirect::permanent("https://eight.holy.llc/") })
         .with_state(server);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -38,8 +39,4 @@ async fn main() -> Result<(), &'static str> {
         .unwrap();
 
     Ok(())
-}
-
-async fn root() -> &'static str {
-    "Hello, World!"
 }
