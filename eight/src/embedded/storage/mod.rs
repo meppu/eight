@@ -31,7 +31,7 @@ impl Storage {
     /// This function returns same result with default value:
     ///
     /// ```
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     ///
     /// let default = Storage::default();
     /// let new = Storage::new();
@@ -50,7 +50,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./set_storage_test").unwrap();
@@ -73,7 +73,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./get_storage_test").unwrap();
@@ -99,7 +99,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./delete_storage_test").unwrap();
@@ -124,7 +124,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
@@ -151,7 +151,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./increment_storage_test").unwrap();
@@ -185,7 +185,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
@@ -217,7 +217,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./search_storage_test").unwrap();
@@ -240,7 +240,7 @@ impl Storage {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Storage;
+    /// use eight::embedded::Storage;
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("./flush_storage_test").unwrap();

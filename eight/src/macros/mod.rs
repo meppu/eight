@@ -1,7 +1,7 @@
 /// Easily create [`Request`].
 ///
 /// ```
-/// use eight::Request;
+/// use eight::messaging::Request;
 ///
 /// assert_eq!(Request::Flush, eight::request!(Flush));
 /// assert_eq!(Request::Get("test".into()), eight::request!(Get, "test"));
@@ -23,7 +23,6 @@ macro_rules! request {
 /// Easily create [`std::collections::HashMap<String, String>`].
 ///
 /// ```
-/// use eight::Request;
 /// use std::collections::HashMap;
 ///
 /// let mut hard_way = HashMap::new();

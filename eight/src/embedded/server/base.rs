@@ -38,7 +38,7 @@ impl FromStr for Server {
     /// Creates new server from string. This call can't fail.
     ///
     /// ```
-    /// use eight::Server;
+    /// use eight::embedded::Server;
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -53,7 +53,7 @@ impl Server {
     /// Creates new server from storage.
     ///
     /// ```
-    /// use eight::{Server, Storage};
+    /// use eight::embedded::{Server, Storage};
     /// use std::str::FromStr;
     ///
     /// let storage = Storage::from_str("/path/to/store").unwrap();
@@ -74,7 +74,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::{Server, Request, Response, Permission};
+    /// use eight::embedded::{Server, Permission};
+    /// use eight::messaging::{Request, Response};
+    ///
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("./permission_test").unwrap();
@@ -105,7 +107,7 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::Server;
+    /// use eight::embedded::Server;
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -161,7 +163,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::{Server, Request, Response};
+    /// use eight::embedded::Server;
+    /// use eight::messaging::{Request, Response};
+    ///
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -191,7 +195,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::{Server, Request, Response};
+    /// use eight::embedded::Server;
+    /// use eight::messaging::{Request, Response};
+    ///
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -219,7 +225,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::{Server, Request, Response};
+    /// use eight::embedded::Server;
+    /// use eight::messaging::{Request, Response};
+    ///
     /// use std::{collections::HashMap, str::FromStr};
     ///
     /// let server = Server::from_str("./server_query_test").unwrap();
