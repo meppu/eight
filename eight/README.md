@@ -6,12 +6,12 @@ To add this crate as a dependency, simply run
 cargo add eight
 ```
 
-## Simple Usage
+Eight library supports both embedded and client usage. By default it comes with `embedded` feature enabled. You can also enable `client` feature to use official client implementation for `eight-serve`.
 
-Eight library tries to keep itself simple as possible. When you look at source code you may see a lot of things but we only expose what you need.
+## Embedded Usage
 
 ```rust ignore
-use eight::{Server, Request, Response};
+use eight::{embedded::Server, messaging::{Request, Response}};
 use std::{collections::HashMap, str::FromStr};
 
 #[tokio::main]
@@ -44,6 +44,10 @@ async fn test() -> eight::Result<()> {
     Ok(())
 }
 ```
+
+## Client Usage
+
+TODO
 
 ## Documentation
 

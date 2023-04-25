@@ -1,10 +1,20 @@
-use super::{executor::Executor, message::ServerRequest};
-use crate::{err, language::QueryExecutor, Permission, Request, Response, Storage};
+use super::{executor::Executor, Permission};
+use crate::{
+    embedded::{language::QueryExecutor, Storage},
+    err,
+    messaging::{Request, Response},
+};
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex, RwLock},
     time,
 };
+
+#[derive(Debug)]
+pub(crate) struct ServerRequest {
+    pub(crate) sender: oneshot::Sender<Response>,
+    pub(crate) request: Request,
+}
 
 /// Server for Eight.
 ///

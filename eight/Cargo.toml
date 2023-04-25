@@ -15,10 +15,12 @@ serde = { version = "1", features = ["derive"], optional = true }
 tokio-test = "0.4"
 
 [features]
-default = []
+default = ["embedded"]
 macros = []
 serde = ["dep:serde"]
-full = ["macros", "serde"]
+embedded = []
+client = []
+full = ["macros", "serde", "embedded", "client"]
 
 [package.metadata.docs.rs]
 all-features = true

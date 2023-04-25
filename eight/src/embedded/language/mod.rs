@@ -3,4 +3,4 @@ mod parser;
 mod runtime;
 mod token;
 
-pub(crate) use runtime::QueryExecutor;
+pub(super) use runtime::QueryExecutor;

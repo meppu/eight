@@ -2,7 +2,7 @@ use super::{
     lexer::lex,
     parser::{CallType, Parser},
 };
-use crate::{Response, Server};
+use crate::{embedded::Server, messaging::Response};
 use std::{collections::HashMap, mem};
 
 #[derive(Debug, Default)]

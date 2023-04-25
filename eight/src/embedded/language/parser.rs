@@ -1,5 +1,5 @@
 use super::token::Token;
-use crate::{err, Request};
+use crate::{err, messaging::Request};
 use std::collections::HashMap;
 
 #[derive(Debug)]

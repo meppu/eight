@@ -1,4 +1,4 @@
-use crate::{err, Request};
+use crate::{err, messaging::Request};
 
 /// Permissions for server.
 #[derive(Debug, Clone, Copy, Default, PartialEq)]

@@ -1,11 +1,3 @@
-use tokio::sync::oneshot;
-
-#[derive(Debug)]
-pub(super) struct ServerRequest {
-    pub(super) sender: oneshot::Sender<Response>,
-    pub(super) request: Request,
-}
-
 /// Allows you to send request to server.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -48,6 +40,6 @@ pub enum Response {
     Boolean(bool),
     /// Success, with text list returned from server.
     TextList(Vec<String>),
-    /// Error, with description returned from server.
+    /// Error, with error value returned from server.
     Error(crate::Error),
 }

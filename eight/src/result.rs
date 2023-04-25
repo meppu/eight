@@ -1,4 +1,4 @@
-use crate::Response;
+use crate::messaging::Response;
 use thiserror::Error;
 
 /// Short version of [`std::result::Result<T, self::Error>`]
