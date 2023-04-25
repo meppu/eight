@@ -1,4 +1,4 @@
-use crate::Request;
+use crate::{err, Request};
 
 /// Permissions for server.
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
@@ -34,7 +34,7 @@ impl Permission {
         if self.is_allowed(request) {
             Ok(())
         } else {
-            Err(crate::Error::PermissionFailure)
+            Err(err!(PermissionFailure))
         }
     }
 

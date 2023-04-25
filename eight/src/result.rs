@@ -6,6 +6,9 @@ pub type Result<T> = std::result::Result<T, self::Error>;
 
 /// Custom error type for eight.
 #[derive(Error, Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", content = "value"))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 pub enum Error {
     #[error("Key length must be longer than two (2) characters")]
     KeyTooShort,
@@ -42,6 +45,18 @@ pub enum Error {
 impl Error {
     /// Turns [`enum@Error`] into [`Response::Error`]
     pub fn as_response(&self) -> Response {
-        Response::Error(self.to_string())
+        Response::Error(self.clone())
     }
 }
+
+macro_rules! err {
+    ($name:ident) => {
+        crate::Error::$name
+    };
+
+    ($fmt:expr, $token:expr) => {
+        crate::Error::CommandError($fmt.to_string(), $token.line, $token.column)
+    };
+}
+
+pub(crate) use err;

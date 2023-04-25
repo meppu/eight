@@ -49,5 +49,5 @@ pub enum Response {
     /// Success, with text list returned from server.
     TextList(Vec<String>),
     /// Error, with description returned from server.
-    Error(String),
+    Error(crate::Error),
 }

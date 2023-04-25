@@ -1,5 +1,5 @@
 use super::{executor::Executor, message::ServerRequest};
-use crate::{language::QueryExecutor, Permission, Request, Response, Storage};
+use crate::{err, language::QueryExecutor, Permission, Request, Response, Storage};
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex, RwLock},
@@ -171,7 +171,7 @@ impl Server {
         let request = ServerRequest { sender, request };
 
         if self.sender.send(request).is_err() {
-            Err(crate::Error::SendFail)
+            Err(err!(SendFail))
         } else {
             Ok(receiver)
         }
@@ -195,20 +195,14 @@ impl Server {
     /// # });
     /// ```
     pub async fn call(&self, request: Request) -> crate::Result<Response> {
-        if let Ok(value) = self.cast(request).await?.await {
-            Ok(value)
-        } else {
-            Err(crate::Error::RecvFail)
-        }
+        self.cast(request).await?.await.map_err(|_| err!(RecvFail))
     }
 
     /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
     pub async fn call_in(&self, request: Request, timeout: Duration) -> crate::Result<Response> {
-        if let Ok(value) = time::timeout(timeout, self.call(request)).await {
-            value
-        } else {
-            Err(crate::Error::RecvTimeout)
-        }
+        time::timeout(timeout, self.call(request))
+            .await
+            .map_err(|_| err!(RecvTimeout))?
     }
 
     /// Sends query to the server and returns response(s).

@@ -1,5 +1,5 @@
 use super::token::Token;
-use crate::Request;
+use crate::{err, Request};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -41,11 +41,7 @@ impl Parser {
             "search" => self.parse_search(tokens),
             "flush" => self.parse_flush(tokens),
             "downgrade" => self.parse_downgrade(tokens),
-            _ => Err(crate::Error::CommandError(
-                "Command not found".into(),
-                command.line,
-                command.column,
-            )),
+            _ => Err(err!("Command not found", command)),
         }?;
 
         Ok(if is_cast {
@@ -72,11 +68,7 @@ impl Parser {
 
     fn parse_set(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 3 {
-            Err(crate::Error::CommandError(
-                "Set command requires two (2) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Set command requires two (2) argument", tokens[0]))
         } else {
             let (key, value) = (&tokens[1], &tokens[2]);
             let (key, value) = (self.fetch_env(&key.value), self.fetch_env(&value.value));
@@ -87,11 +79,7 @@ impl Parser {
 
     fn parse_get(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 2 {
-            Err(crate::Error::CommandError(
-                "Get command requires one (1) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Get command requires one (1) argument", tokens[0]))
         } else {
             let key = self.fetch_env(&tokens[1].value);
             Ok(Request::Get(key))
@@ -100,11 +88,7 @@ impl Parser {
 
     fn parse_delete(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 2 {
-            Err(crate::Error::CommandError(
-                "Delete command requires one (1) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Delete command requires one (1) argument", tokens[0]))
         } else {
             let key = self.fetch_env(&tokens[1].value);
             Ok(Request::Delete(key))
@@ -113,11 +97,7 @@ impl Parser {
 
     fn parse_exists(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 2 {
-            Err(crate::Error::CommandError(
-                "Exists command requires one (1) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Exists command requires one (1) argument", tokens[0]))
         } else {
             let key = self.fetch_env(&tokens[1].value);
             Ok(Request::Exists(key))
@@ -126,10 +106,9 @@ impl Parser {
 
     fn parse_increment(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 3 {
-            return Err(crate::Error::CommandError(
-                "Increment command requires two (2) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
+            return Err(err!(
+                "Increment command requires two (2) argument",
+                tokens[0]
             ));
         }
 
@@ -140,10 +119,9 @@ impl Parser {
         );
 
         let number = value.parse::<usize>().map_err(|_| {
-            crate::Error::CommandError(
-                "Second argument for increment command must be a valid unsigned integer".into(),
-                value_token.line,
-                value_token.column,
+            err!(
+                "Second argument for increment command must be a valid unsigned integer",
+                value_token
             )
         })?;
 
@@ -152,10 +130,9 @@ impl Parser {
 
     fn parse_decrement(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 3 {
-            return Err(crate::Error::CommandError(
-                "Decrement command requires two (2) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
+            return Err(err!(
+                "Decrement command requires two (2) argument",
+                tokens[0]
             ));
         }
 
@@ -166,10 +143,9 @@ impl Parser {
         );
 
         let number = value.parse::<usize>().map_err(|_| {
-            crate::Error::CommandError(
-                "Second argument for decrement command must be a valid unsigned integer".into(),
-                value_token.line,
-                value_token.column,
+            err!(
+                "Second argument for decrement command must be a valid unsigned integer",
+                value_token
             )
         })?;
 
@@ -178,11 +154,7 @@ impl Parser {
 
     fn parse_search(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 2 {
-            Err(crate::Error::CommandError(
-                "Search command requires one (1) argument".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Search command requires one (1) argument", tokens[0]))
         } else {
             let key = self.fetch_env(&tokens[1].value);
             Ok(Request::Search(key))
@@ -191,11 +163,7 @@ impl Parser {
 
     fn parse_flush(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 1 {
-            Err(crate::Error::CommandError(
-                "Flush command can't take any value".into(),
-                tokens[0].line,
-                tokens[0].column,
-            ))
+            Err(err!("Flush command can't take any value", tokens[0]))
         } else {
             Ok(Request::Flush)
         }
@@ -203,10 +171,9 @@ impl Parser {
 
     fn parse_downgrade(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
         if tokens.len() != 1 {
-            Err(crate::Error::CommandError(
-                "Downgrade permission command can't take any value".into(),
-                tokens[0].line,
-                tokens[0].column,
+            Err(err!(
+                "Downgrade permission command can't take any value",
+                tokens[0]
             ))
         } else {
             Ok(Request::DowngradePermission)
