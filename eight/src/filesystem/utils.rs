@@ -13,8 +13,8 @@ pub(super) fn validate_key(key: &str) -> bool {
 pub(super) fn search_recursive(path: PathBuf, deep: usize) -> Vec<String> {
     let mut result = Vec::new();
 
-    let Ok(entries) = path.read_dir() else { 
-        return result; 
+    let Ok(entries) = path.read_dir() else {
+        return result;
     };
 
     let paths = entries.flatten().map(|entry| entry.path());
