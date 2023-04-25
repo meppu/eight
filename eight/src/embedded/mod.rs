@@ -1,6 +1,4 @@
-//! Allows you to use eight embedded database. This feature is enabled by default.
-//!
-//! Visit package README for embedded usage example.
+#![doc = include_str!("./README.md")]
 
 mod filesystem;
 mod language;
