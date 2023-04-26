@@ -3,11 +3,13 @@ mod permission;
 
 pub use permission::*;
 
-use crate::embedded::{
+use crate::{
+    embedded::{
+        language::QueryExecutor,
+        messaging::{Request, Response},
+        Storage,
+    },
     err,
-    language::QueryExecutor,
-    messaging::{Request, Response},
-    Storage,
 };
 use executor::Executor;
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
@@ -191,7 +193,7 @@ impl Server {
         let request = ServerRequest { sender, request };
 
         if self.sender.send(request).is_err() {
-            Err(err!(SendFail))
+            Err(err!(embedded, SendFail))
         } else {
             Ok(receiver)
         }
@@ -217,14 +219,17 @@ impl Server {
     /// # });
     /// ```
     pub async fn call(&self, request: Request) -> super::Result<Response> {
-        self.cast(request).await?.await.map_err(|_| err!(RecvFail))
+        self.cast(request)
+            .await?
+            .await
+            .map_err(|_| err!(embedded, RecvFail))
     }
 
     /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
     pub async fn call_in(&self, request: Request, timeout: Duration) -> super::Result<Response> {
         time::timeout(timeout, self.call(request))
             .await
-            .map_err(|_| err!(RecvTimeout))?
+            .map_err(|_| err!(embedded, RecvTimeout))?
     }
 
     /// Sends query to the server and returns response(s).

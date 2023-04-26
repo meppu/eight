@@ -1,5 +1,8 @@
 use super::token::Token;
-use crate::embedded::{err, messaging::Request, Error, Result};
+use crate::{
+    embedded::{messaging::Request, Error, Result},
+    err,
+};
 use std::collections::HashMap;
 
 #[derive(Debug)]

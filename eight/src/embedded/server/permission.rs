@@ -1,4 +1,7 @@
-use crate::embedded::{err, messaging::Request, Result};
+use crate::{
+    embedded::{messaging::Request, Result},
+    err,
+};
 
 /// Permissions for server.
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
@@ -34,7 +37,7 @@ impl Permission {
         if self.is_allowed(request) {
             Ok(())
         } else {
-            Err(err!(PermissionFailure))
+            Err(err!(embedded, PermissionFailure))
         }
     }
 

@@ -48,15 +48,3 @@ impl Error {
         Response::Error(self.clone())
     }
 }
-
-macro_rules! err {
-    ($name:ident) => {
-        crate::embedded::Error::$name
-    };
-
-    ($fmt:expr, $token:expr) => {
-        crate::embedded::Error::CommandError($fmt.to_string(), $token.line, $token.column)
-    };
-}
-
-pub(crate) use err;
