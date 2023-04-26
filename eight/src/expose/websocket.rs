@@ -14,7 +14,7 @@ use futures::{
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-pub async fn handle_connection(
+pub(super) async fn handle_connection(
     State(database): State<Server>,
     socket: WebSocketUpgrade,
 ) -> impl IntoResponse {

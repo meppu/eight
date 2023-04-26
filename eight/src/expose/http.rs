@@ -2,7 +2,7 @@ use crate::client::messaging::{Request, Response};
 use crate::embedded::Server;
 use axum::{extract::State, http::StatusCode, Json};
 
-pub async fn run_query(
+pub(super) async fn run_query(
     State(database): State<Server>,
     Json(payload): Json<Request>,
 ) -> (StatusCode, Json<Response>) {
