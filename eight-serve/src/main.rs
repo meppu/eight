@@ -1,42 +1,32 @@
-use axum::{
-    response::Redirect,
-    routing::{get, post},
-    Router,
-};
 use clap::Parser;
-use eight::embedded::{Permission, Server};
+use eight::{
+    embedded::{Permission, Server},
+    expose::{self, ConfigBuilder},
+};
 use std::{net::SocketAddr, str::FromStr};
 
 mod cli;
-mod http;
-mod query;
-mod websocket;
 
 #[tokio::main]
 async fn main() -> Result<(), &'static str> {
     let args = cli::Args::parse();
 
     let server = Server::from_str(&args.directory).unwrap();
-    server.start().await;
-
-    match args.permission {
-        0 => server.set_permission(Permission::Guest).await,
-        1 => server.set_permission(Permission::Admin).await,
-        2 => server.set_permission(Permission::Owner).await,
-        _ => return Err("Invalid permission value. For more information, try '--help'."),
-    }
-
-    let app = Router::new()
-        .route("/query", post(http::run_query))
-        .route("/rpc", get(websocket::handle_connection))
-        .fallback(|| async { Redirect::permanent("https://eight.holy.llc/") })
-        .with_state(server);
-
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let permission = match args.permission {
+        0 => Ok(Permission::Guest),
+        1 => Ok(Permission::Admin),
+        2 => Ok(Permission::Owner),
+        _ => Err("Invalid permission value. For more information, try '--help'."),
+    }?;
+
+    let config = ConfigBuilder::from_server(server)
+        .set_fallback("https://surrealdb.com")
+        .set_permission(permission)
+        .bind(addr)
+        .collect();
+
+    expose::expose(config).await;
 
     Ok(())
 }
