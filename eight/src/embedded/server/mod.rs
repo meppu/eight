@@ -82,9 +82,7 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{Server, Permission};
-    /// use eight::messaging::{Request, Response};
-    ///
+    /// use eight::embedded::{Server, Permission, messaging::{Request, Response}};
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("./permission_test").unwrap();
@@ -171,9 +169,7 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::Server;
-    /// use eight::messaging::{Request, Response};
-    ///
+    /// use eight::embedded::{Server, messaging::{Request, Response}};
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -203,9 +199,7 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::Server;
-    /// use eight::messaging::{Request, Response};
-    ///
+    /// use eight::embedded::{Server, messaging::{Request, Response}};
     /// use std::str::FromStr;
     ///
     /// let server = Server::from_str("/path/to/store").unwrap();
@@ -236,8 +230,7 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::Server;
-    /// use eight::messaging::{Request, Response};
+    /// use eight::embedded::{Server, messaging::{Request, Response}};
     ///
     /// use std::{collections::HashMap, str::FromStr};
     ///

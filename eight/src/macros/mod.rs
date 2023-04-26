@@ -1,7 +1,7 @@
 /// Easily create [`Request`].
 ///
 /// ```
-/// use eight::messaging::Request;
+/// use eight::embedded::messaging::Request;
 ///
 /// assert_eq!(Request::Flush, eight::request!(Flush));
 /// assert_eq!(Request::Get("test".into()), eight::request!(Get, "test"));
