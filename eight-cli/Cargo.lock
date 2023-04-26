@@ -284,7 +284,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "eight-serve"
+name = "eight-cli"
 version = "0.1.0"
 dependencies = [
  "clap",
