@@ -42,6 +42,20 @@ impl Storage {
         Default::default()
     }
 
+    /// Create new storage from path.
+    ///
+    /// ```no_run
+    /// use eight::embedded::Storage;
+    ///
+    /// Storage::from_path("/tmp/test");
+    /// ```
+    pub fn from_path<T>(path: T) -> Self
+    where
+        T: Into<PathBuf>,
+    {
+        Self { path: path.into() }
+    }
+
     /// Create or replace a key in storage.
     ///
     /// This function stores key in given directory and returns nothing.
@@ -51,9 +65,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./set_storage_test").unwrap();
+    /// let storage = Storage::from_path("./set_storage_test");
     ///
     /// if let Err(error) = storage.set("icecat".into(), "some session id".into()).await {
     ///   panic!("{}", error.to_string());
@@ -74,9 +87,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./get_storage_test").unwrap();
+    /// let storage = Storage::from_path("./get_storage_test");
     ///
     /// storage.set("icecat".into(), "some session id".into()).await;
     ///
@@ -100,9 +112,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./delete_storage_test").unwrap();
+    /// let storage = Storage::from_path("./delete_storage_test");
     ///
     /// storage.set("icecat".into(), "some session id".into()).await;
     ///
@@ -125,9 +136,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
+    /// let storage = Storage::from_path("./decrement_storage_test");
     ///
     /// storage.set("some".into(), "test".into()).await;
     ///
@@ -152,9 +162,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./increment_storage_test").unwrap();
+    /// let storage = Storage::from_path("./increment_storage_test");
     ///
     /// storage.set("icecat_point".into(), "10".into()).await;
     ///
@@ -186,9 +195,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./decrement_storage_test").unwrap();
+    /// let storage = Storage::from_path("./decrement_storage_test");
     ///
     /// storage.set("icecat_point".into(), "10".into()).await;
     ///
@@ -218,9 +226,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./search_storage_test").unwrap();
+    /// let storage = Storage::from_path("./search_storage_test");
     ///
     /// for i in 1..100 {
     ///   storage.set(format!("result{}", i), "test".into()).await.unwrap();
@@ -241,9 +248,8 @@ impl Storage {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("./flush_storage_test").unwrap();
+    /// let storage = Storage::from_path("./flush_storage_test");
     ///
     /// for i in 1..1000 {
     ///   storage.set(format!("result{}", i), "test".into()).await.unwrap();

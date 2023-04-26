@@ -12,7 +12,7 @@ use crate::{
     err,
 };
 use executor::Executor;
-use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
+use std::{collections::HashMap, path::PathBuf, str::FromStr, sync::Arc, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot, Mutex, RwLock},
     time,
@@ -43,14 +43,6 @@ pub struct Server {
 impl FromStr for Server {
     type Err = core::convert::Infallible;
 
-    /// Creates new server from string. This call can't fail.
-    ///
-    /// ```
-    /// use eight::embedded::Server;
-    /// use std::str::FromStr;
-    ///
-    /// let server = Server::from_str("/path/to/store").unwrap();
-    /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let storage = Storage::from_str(s)?;
         Ok(Server::new(storage))
@@ -60,11 +52,10 @@ impl FromStr for Server {
 impl Server {
     /// Creates new server from storage.
     ///
-    /// ```
+    /// ```no_run
     /// use eight::embedded::{Server, Storage};
-    /// use std::str::FromStr;
     ///
-    /// let storage = Storage::from_str("/path/to/store").unwrap();
+    /// let storage = Storage::from_path("/path/to/store");
     /// let server = Server::new(storage);
     /// ```
     pub fn new(storage: Storage) -> Self {
@@ -78,14 +69,28 @@ impl Server {
         }
     }
 
+    /// Create new server from path.
+    ///
+    /// ```no_run
+    /// use eight::embedded::Server;
+    ///
+    /// Server::from_path("/tmp/test");
+    /// ```
+    pub fn from_path<T>(path: T) -> Self
+    where
+        T: Into<PathBuf>,
+    {
+        let storage = Storage::from_path(path);
+        Self::new(storage)
+    }
+
     /// Set server permissions.
     ///
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::{Server, Permission, messaging::{Request, Response}};
-    /// use std::str::FromStr;
     ///
-    /// let server = Server::from_str("./permission_test").unwrap();
+    /// let server = Server::from_path("./permission_test");
     ///
     /// server.set_permission(Permission::Guest).await;
     /// server.start().await;
@@ -114,9 +119,8 @@ impl Server {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Server;
-    /// use std::str::FromStr;
     ///
-    /// let server = Server::from_str("/path/to/store").unwrap();
+    /// let server = Server::from_path("/path/to/store");
     /// server.start().await;
     ///
     /// # assert_eq!(2, 2);
@@ -170,9 +174,8 @@ impl Server {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::{Server, messaging::{Request, Response}};
-    /// use std::str::FromStr;
     ///
-    /// let server = Server::from_str("/path/to/store").unwrap();
+    /// let server = Server::from_path("/path/to/store");
     /// server.start().await;
     ///
     /// let receiver = server.cast(Request::Exists("key".into())).await.unwrap();
@@ -200,9 +203,8 @@ impl Server {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::{Server, messaging::{Request, Response}};
-    /// use std::str::FromStr;
     ///
-    /// let server = Server::from_str("/path/to/store").unwrap();
+    /// let server = Server::from_path("/path/to/store");
     /// server.start().await;
     ///
     /// let response = server.call(Request::Exists("key".into())).await.unwrap();
@@ -231,10 +233,9 @@ impl Server {
     /// ```
     /// # tokio_test::block_on(async {
     /// use eight::embedded::{Server, messaging::{Request, Response}};
+    /// use std::collections::HashMap;
     ///
-    /// use std::{collections::HashMap, str::FromStr};
-    ///
-    /// let server = Server::from_str("./server_query_test").unwrap();
+    /// let server = Server::from_path("./server_query_test");
     /// server.start().await;
     ///
     /// let mut env = HashMap::<String, String>::new();
