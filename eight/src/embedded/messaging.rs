@@ -1,3 +1,5 @@
+//! Types for messaging between server.
+
 /// Allows you to send request to server.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -1,4 +1,6 @@
-//! Official client implementation for [eight-serve](https://crates.io/crates/eight-serve).
+//! Official client implementation for [`eight::expose`].
+//!
+//! [`eight::expose`]: ./expose/index.html
 
 mod result;
 pub use result::*;

@@ -28,7 +28,7 @@ impl FromStr for Storage {
 impl Storage {
     /// Create new storage.
     ///
-    /// This function returns same result with default value:
+    /// This function is same with [`Default::default`].
     ///
     /// ```
     /// use eight::embedded::Storage;
@@ -141,11 +141,9 @@ impl Storage {
     ///
     /// storage.set("some".into(), "test".into()).await;
     ///
-    /// match storage.exists("some".into()).await {
-    ///   Ok(true) => storage.delete("some".into()).await.unwrap(),
-    ///   Ok(false) => panic!("it doesn't exists"),
-    ///   Err(error) => panic!("{}", error.to_string()),
-    /// }
+    /// let Ok(true) = storage.exists("some".into()).await else {
+    ///   panic!("Should exists");
+    /// };
     ///
     /// # storage.flush().await;
     /// # });
