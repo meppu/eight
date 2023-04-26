@@ -14,6 +14,7 @@ tokio = { version = "1", features = ["rt", "fs", "sync", "time"] }
 serde = { version = "1", features = ["derive"], optional = true }
 serde_json = { version = "1", optional = true }
 reqwest = { version = "0.11", optional = true }
+axum = { version = "0.6", features = ["ws"], optional = true }
 
 [dev-dependencies]
 tokio-test = "0.4"
@@ -23,7 +24,8 @@ default = []
 macros = []
 serde = ["dep:serde"]
 client = ["serde", "dep:serde_json", "dep:reqwest"]
-full = ["macros", "serde",  "client"]
+expose = ["client", "dep:axum"]
+full = ["macros", "serde",  "client", "expose"]
 
 [package.metadata.docs.rs]
 all-features = true

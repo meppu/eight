@@ -7,6 +7,10 @@ pub mod embedded;
 #[cfg_attr(docsrs, doc(cfg(feature = "client")))]
 pub mod client;
 
+#[cfg(feature = "expose")]
+#[cfg_attr(docsrs, doc(cfg(feature = "expose")))]
+pub mod expose;
+
 #[cfg(feature = "macros")]
 #[cfg_attr(docsrs, doc(cfg(feature = "macros")))]
 mod macros;
