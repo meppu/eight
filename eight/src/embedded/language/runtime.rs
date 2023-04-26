@@ -2,7 +2,7 @@ use super::{
     lexer::lex,
     parser::{CallType, Parser},
 };
-use crate::{embedded::Server, messaging::Response};
+use crate::embedded::{messaging::Response, Result, Server};
 use std::{collections::HashMap, mem};
 
 #[derive(Debug, Default)]
@@ -16,7 +16,7 @@ impl QueryExecutor {
         Self { source, env }
     }
 
-    pub async fn execute(&mut self, server: &Server) -> crate::Result<Vec<Response>> {
+    pub async fn execute(&mut self, server: &Server) -> Result<Vec<Response>> {
         let collection = lex(mem::take(&mut self.source));
         let mut parser = Parser::new(mem::take(&mut self.env));
         let mut results = Vec::new();

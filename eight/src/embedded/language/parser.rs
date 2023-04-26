@@ -1,5 +1,5 @@
 use super::token::Token;
-use crate::{err, messaging::Request};
+use crate::embedded::{err, messaging::Request, Error, Result};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -18,8 +18,8 @@ impl Parser {
         Self { env }
     }
 
-    pub fn execute(&mut self, tokens: Vec<Token>) -> crate::Result<CallType> {
-        let command = tokens.first().ok_or(crate::Error::CommandNotFound)?;
+    pub fn execute(&mut self, tokens: Vec<Token>) -> Result<CallType> {
+        let command = tokens.first().ok_or(Error::CommandNotFound)?;
         let mut command_name = command.value.chars();
 
         // check if call or cast
@@ -66,7 +66,7 @@ impl Parser {
         value.to_string()
     }
 
-    fn parse_set(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_set(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 3 {
             Err(err!("Set command requires two (2) argument", tokens[0]))
         } else {
@@ -77,7 +77,7 @@ impl Parser {
         }
     }
 
-    fn parse_get(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_get(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 2 {
             Err(err!("Get command requires one (1) argument", tokens[0]))
         } else {
@@ -86,7 +86,7 @@ impl Parser {
         }
     }
 
-    fn parse_delete(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_delete(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 2 {
             Err(err!("Delete command requires one (1) argument", tokens[0]))
         } else {
@@ -95,7 +95,7 @@ impl Parser {
         }
     }
 
-    fn parse_exists(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_exists(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 2 {
             Err(err!("Exists command requires one (1) argument", tokens[0]))
         } else {
@@ -104,7 +104,7 @@ impl Parser {
         }
     }
 
-    fn parse_increment(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_increment(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 3 {
             return Err(err!(
                 "Increment command requires two (2) argument",
@@ -128,7 +128,7 @@ impl Parser {
         Ok(Request::Increment(key, number))
     }
 
-    fn parse_decrement(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_decrement(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 3 {
             return Err(err!(
                 "Decrement command requires two (2) argument",
@@ -152,7 +152,7 @@ impl Parser {
         Ok(Request::Decrement(key, number))
     }
 
-    fn parse_search(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_search(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 2 {
             Err(err!("Search command requires one (1) argument", tokens[0]))
         } else {
@@ -161,7 +161,7 @@ impl Parser {
         }
     }
 
-    fn parse_flush(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_flush(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 1 {
             Err(err!("Flush command can't take any value", tokens[0]))
         } else {
@@ -169,7 +169,7 @@ impl Parser {
         }
     }
 
-    fn parse_downgrade(&mut self, tokens: Vec<Token>) -> crate::Result<Request> {
+    fn parse_downgrade(&mut self, tokens: Vec<Token>) -> Result<Request> {
         if tokens.len() != 1 {
             Err(err!(
                 "Downgrade permission command can't take any value",

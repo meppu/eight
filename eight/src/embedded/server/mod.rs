@@ -3,10 +3,11 @@ mod permission;
 
 pub use permission::*;
 
-use crate::{
-    embedded::{language::QueryExecutor, Storage},
+use crate::embedded::{
     err,
+    language::QueryExecutor,
     messaging::{Request, Response},
+    Storage,
 };
 use executor::Executor;
 use std::{collections::HashMap, str::FromStr, sync::Arc, time::Duration};
@@ -185,7 +186,7 @@ impl Server {
     /// # server.call(Request::Flush).await;
     /// # });
     /// ```
-    pub async fn cast(&self, request: Request) -> crate::Result<oneshot::Receiver<Response>> {
+    pub async fn cast(&self, request: Request) -> super::Result<oneshot::Receiver<Response>> {
         let (sender, receiver) = oneshot::channel();
         let request = ServerRequest { sender, request };
 
@@ -215,12 +216,12 @@ impl Server {
     /// # server.call(Request::Flush).await;
     /// # });
     /// ```
-    pub async fn call(&self, request: Request) -> crate::Result<Response> {
+    pub async fn call(&self, request: Request) -> super::Result<Response> {
         self.cast(request).await?.await.map_err(|_| err!(RecvFail))
     }
 
     /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
-    pub async fn call_in(&self, request: Request, timeout: Duration) -> crate::Result<Response> {
+    pub async fn call_in(&self, request: Request, timeout: Duration) -> super::Result<Response> {
         time::timeout(timeout, self.call(request))
             .await
             .map_err(|_| err!(RecvTimeout))?
@@ -258,7 +259,7 @@ impl Server {
         &self,
         query: T,
         env: HashMap<String, String>,
-    ) -> crate::Result<Vec<Response>>
+    ) -> super::Result<Vec<Response>>
     where
         T: ToString,
     {

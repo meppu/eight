@@ -1,5 +1,4 @@
-use crate::embedded::Storage;
-use crate::messaging::Response;
+use crate::embedded::{messaging::Response, Storage};
 
 #[derive(Debug, Clone)]
 pub(super) struct Executor {

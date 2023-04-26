@@ -6,11 +6,11 @@ mod utils;
 
 const MAXIMUM_PARALLEL_SEARCH: usize = 1024;
 
-pub(crate) fn create_path(path: &Path, key: &str) -> crate::Result<PathBuf> {
+pub(crate) fn create_path(path: &Path, key: &str) -> super::Result<PathBuf> {
     if key.len() < 2 {
-        return Err(crate::Error::KeyTooShort);
+        return Err(super::Error::KeyTooShort);
     } else if !utils::validate_key(key) {
-        return Err(crate::Error::KeyWrongFormat);
+        return Err(super::Error::KeyWrongFormat);
     }
 
     let mut new_path = path.to_path_buf();
@@ -24,47 +24,47 @@ pub(crate) fn create_path(path: &Path, key: &str) -> crate::Result<PathBuf> {
     Ok(new_path)
 }
 
-pub(crate) async fn write(path: &mut PathBuf, content: String) -> crate::Result<()> {
+pub(crate) async fn write(path: &mut PathBuf, content: String) -> super::Result<()> {
     let file = path.file_name().unwrap().to_str().unwrap().to_string();
 
     path.pop();
 
     if !exists(path).await? && fs::create_dir_all(&path).await.is_err() {
-        return Err(crate::Error::CreateDirFail);
+        return Err(super::Error::CreateDirFail);
     }
 
     path.push(file);
 
     fs::write(&path, content)
         .await
-        .map_err(|_| crate::Error::FileWriteFail)
+        .map_err(|_| super::Error::FileWriteFail)
 }
 
-pub(crate) async fn read(path: &PathBuf) -> crate::Result<String> {
+pub(crate) async fn read(path: &PathBuf) -> super::Result<String> {
     fs::read_to_string(path)
         .await
-        .map_err(|_| crate::Error::FileReadFail)
+        .map_err(|_| super::Error::FileReadFail)
 }
 
-pub(crate) async fn delete(path: &PathBuf) -> crate::Result<()> {
+pub(crate) async fn delete(path: &PathBuf) -> super::Result<()> {
     fs::remove_file(path)
         .await
-        .map_err(|_| crate::Error::FileRemoveFail)
+        .map_err(|_| super::Error::FileRemoveFail)
 }
 
-pub(crate) async fn exists(path: &PathBuf) -> crate::Result<bool> {
+pub(crate) async fn exists(path: &PathBuf) -> super::Result<bool> {
     fs::try_exists(path)
         .await
-        .map_err(|_| crate::Error::CheckExistsFail)
+        .map_err(|_| super::Error::CheckExistsFail)
 }
 
-pub(crate) async fn flush(path: &PathBuf) -> crate::Result<()> {
+pub(crate) async fn flush(path: &PathBuf) -> super::Result<()> {
     fs::remove_dir_all(path)
         .await
-        .map_err(|_| crate::Error::DirRemoveFail)
+        .map_err(|_| super::Error::DirRemoveFail)
 }
 
-pub(crate) async fn search(root: &Path, key: &str) -> crate::Result<Vec<String>> {
+pub(crate) async fn search(root: &Path, key: &str) -> super::Result<Vec<String>> {
     let key_length = key.len();
     let deep = key_length / 2;
 

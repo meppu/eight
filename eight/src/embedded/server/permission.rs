@@ -1,4 +1,4 @@
-use crate::{err, messaging::Request};
+use crate::embedded::{err, messaging::Request, Result};
 
 /// Permissions for server.
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
@@ -30,7 +30,7 @@ impl Permission {
     }
 
     /// Check if request is allowed for permission and return a result.
-    pub fn allowed(&self, request: &Request) -> crate::Result<()> {
+    pub fn allowed(&self, request: &Request) -> Result<()> {
         if self.is_allowed(request) {
             Ok(())
         } else {

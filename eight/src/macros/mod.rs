@@ -12,11 +12,11 @@
 #[macro_export]
 macro_rules! request {
     ($name:ident) => {
-        eight::messaging::Request::$name;
+        eight::embedded::messaging::Request::$name;
     };
 
     ($name:ident, $($value:expr),*) => {
-        eight::messaging::Request::$name($($value.to_string()),*);
+        eight::embedded::messaging::Request::$name($($value.to_string()),*);
     };
 }
 

@@ -62,7 +62,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn set(&self, key: String, value: String) -> crate::Result<()> {
+    pub async fn set(&self, key: String, value: String) -> super::Result<()> {
         let mut path = filesystem::create_path(&self.path, &key)?;
         filesystem::write(&mut path, value).await
     }
@@ -88,7 +88,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn get(&self, key: String) -> crate::Result<String> {
+    pub async fn get(&self, key: String) -> super::Result<String> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::read(&path).await
     }
@@ -113,7 +113,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn delete(&self, key: String) -> crate::Result<()> {
+    pub async fn delete(&self, key: String) -> super::Result<()> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::delete(&path).await
     }
@@ -140,7 +140,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn exists(&self, key: String) -> crate::Result<bool> {
+    pub async fn exists(&self, key: String) -> super::Result<bool> {
         let path = filesystem::create_path(&self.path, &key)?;
         filesystem::exists(&path).await
     }
@@ -166,13 +166,13 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn increment(&self, key: String, num: usize) -> crate::Result<usize> {
+    pub async fn increment(&self, key: String, num: usize) -> super::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
         let new = raw
             .parse::<usize>()
-            .map_err(|_| crate::Error::UIntParseFail)?
+            .map_err(|_| super::Error::UIntParseFail)?
             + num;
 
         filesystem::write(&mut path, new.to_string()).await?;
@@ -200,13 +200,13 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn decrement(&self, key: String, num: usize) -> crate::Result<usize> {
+    pub async fn decrement(&self, key: String, num: usize) -> super::Result<usize> {
         let mut path = filesystem::create_path(&self.path, &key)?;
 
         let raw = filesystem::read(&path).await?;
         let new = raw
             .parse::<usize>()
-            .map_err(|_| crate::Error::UIntParseFail)?
+            .map_err(|_| super::Error::UIntParseFail)?
             - num;
 
         filesystem::write(&mut path, new.to_string()).await?;
@@ -232,7 +232,7 @@ impl Storage {
     /// # storage.flush().await;
     /// # });
     /// ```
-    pub async fn search(&self, key: String) -> crate::Result<Vec<String>> {
+    pub async fn search(&self, key: String) -> super::Result<Vec<String>> {
         filesystem::search(&self.path, &key).await
     }
 
@@ -254,7 +254,7 @@ impl Storage {
     /// }
     /// # });
     /// ```
-    pub async fn flush(&self) -> crate::Result<()> {
+    pub async fn flush(&self) -> super::Result<()> {
         filesystem::flush(&self.path).await
     }
 }
