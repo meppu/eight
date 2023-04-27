@@ -61,6 +61,12 @@ impl QueryBuilder {
         self
     }
 
+    /// Set environment variables.
+    pub fn bind_all(mut self, table: HashMap<String, String>) -> Self {
+        self.req.vars = table;
+        self
+    }
+
     /// Set request id. Which is used for asynchronous message handling.
     pub fn set_id<T: ToString>(mut self, id: T) -> Self {
         self.req.id = id.to_string();
