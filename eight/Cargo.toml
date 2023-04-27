@@ -13,7 +13,7 @@ tokio = { version = "1", features = ["rt", "fs", "sync", "time"] }
 # optional
 serde = { version = "1", features = ["derive"], optional = true }
 serde_json = { version = "1", optional = true }
-reqwest = { version = "0.11", optional = true }
+awc = { version = "3.1", optional = true }
 axum = { version = "0.6", features = ["ws"], optional = true }
 
 [dev-dependencies]
@@ -23,7 +23,7 @@ tokio-test = "0.4"
 default = []
 macros = []
 serde = ["dep:serde"]
-client = ["serde", "dep:serde_json", "dep:reqwest"]
+client = ["serde", "dep:serde_json", "dep:awc"]
 expose = ["client", "dep:axum"]
 full = ["macros", "serde",  "client", "expose"]
 

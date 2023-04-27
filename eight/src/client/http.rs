@@ -42,21 +42,19 @@ impl Client {
     /// # }
     /// ```
     pub async fn execute(&self, request: messaging::Request) -> super::Result<messaging::Response> {
-        let raw_request = serde_json::to_string(&request).unwrap_or_default();
-        let client = reqwest::Client::new();
+        let client = awc::Client::default();
 
-        let response = client
+        let mut response = client
             .post(&self.host)
-            .body(raw_request)
-            .send()
+            .send_json(&request)
             .await
             .map_err(|_| super::Error::HTTPRequestFail)?;
 
         let body = response
-            .text()
+            .json::<messaging::Response>()
             .await
             .map_err(|_| super::Error::ReadBodyFail)?;
 
-        Ok(serde_json::from_str::<messaging::Response>(&body).unwrap())
+        Ok(body)
     }
 }
