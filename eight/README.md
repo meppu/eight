@@ -10,13 +10,13 @@ Eight library supports both embedded and client usage. By default it comes with 
 
 ## Embedded Usage
 
-```rust ignore
-use eight::{embedded::Server, messaging::{Request, Response}};
-use std::{collections::HashMap, str::FromStr};
+```rust no_run
+use eight::{embedded::{self, messaging::{Request, Response}, Server}};
+use std::collections::HashMap;
 
-#[tokio::main]
-async fn test() -> eight::Result<()> {
-    let server = Server::from_str("/path/to/store").unwrap();
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> embedded::Result<()> {
+    let server = Server::from_path("/path/to/store");
 
     // start listener in another task
     server.start().await;

@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 futures = "0.3"
 thiserror = "1"
-tokio = { version = "1", features = ["rt", "macros", "fs", "sync", "time"] }
+tokio = { version = "1", features = ["rt", "fs", "sync", "time"] }
 
 # optional
 serde = { version = "1", features = ["derive"], optional = true }
@@ -20,6 +20,7 @@ rand = { version = "0.8", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [features]
 default = []

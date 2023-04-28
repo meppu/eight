@@ -137,7 +137,7 @@ impl Storage {
     /// # tokio_test::block_on(async {
     /// use eight::embedded::Storage;
     ///
-    /// let storage = Storage::from_path("./decrement_storage_test");
+    /// let storage = Storage::from_path("./exists_storage_test");
     ///
     /// storage.set("some".into(), "test".into()).await;
     ///
