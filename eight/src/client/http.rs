@@ -2,15 +2,15 @@
 
 use super::messaging;
 
-/// Stateless client struct.
+/// Stateless HTTP client struct.
 pub struct Client {
     host: String,
 }
 
 impl Client {
-    /// Create new http client from host.
+    /// Create new HTTP client from host.
     ///
-    /// Since http queries are executed from `/query` path, it appends "/query" to end of the string before creating struct.
+    /// Since HTTP queries are executed from `/query` path, it appends "/query" to end of the string before creating struct.
     ///
     /// ```no_run
     /// use eight::client::http::Client;
@@ -33,20 +33,21 @@ impl Client {
     /// let client = Client::new("http://localhost:3000/");
     ///
     /// let request = QueryBuilder::new()
-    ///   .add_query("set $user 0")
+    ///   .add_query("delete $user;")
     ///   .bind("user", "bob")
-    ///   .set_id("some_unique_id_to_handle")
+    ///   .set_random_id()
     ///   .collect();
     ///
     /// let response = client.execute(request).await;
     /// # }
     /// ```
     pub async fn execute(&self, request: messaging::Request) -> super::Result<messaging::Response> {
-        let client = awc::Client::default();
+        let client = reqwest::Client::default();
 
-        let mut response = client
+        let response = client
             .post(&self.host)
-            .send_json(&request)
+            .json(&request)
+            .send()
             .await
             .map_err(|_| super::Error::HTTPRequestFail)?;
 

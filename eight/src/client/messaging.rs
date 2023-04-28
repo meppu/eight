@@ -1,5 +1,6 @@
 //! Types for messaging between web server.
 
+use rand::distributions::{Alphanumeric, DistString};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -26,9 +27,9 @@ pub struct Response {
 /// use eight::client::messaging::QueryBuilder;
 ///
 /// let request = QueryBuilder::new()
-///   .add_query("set $user 0")
+///   .add_query("set $user 0;")
 ///   .bind("user", "bob")
-///   .set_id("some_unique_id_to_handle")
+///   .set_random_id()
 ///   .collect();
 ///
 /// ```
@@ -84,6 +85,12 @@ impl QueryBuilder {
         self.req.query.push_str(query);
         self.req.query.push('\n');
 
+        self
+    }
+
+    /// Generate random id for request.
+    pub fn set_random_id(mut self) -> Self {
+        self.req.id = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
         self
     }
 

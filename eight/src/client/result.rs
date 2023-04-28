@@ -10,4 +10,12 @@ pub enum Error {
     HTTPRequestFail,
     #[error("Reading body content failed")]
     ReadBodyFail,
+    #[error("Connecting to WebSocket failed")]
+    WebSocketConnectionFail,
+    #[error("Sending message to WebSocket failed")]
+    WebSocketSendFail,
+    #[error("Decoding received message from WebSocket failed")]
+    WebSocketDecodeFail,
+    #[error("Receive message from WebSocket failed")]
+    WebSocketReceiveFail,
 }
