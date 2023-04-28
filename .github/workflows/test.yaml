@@ -13,12 +13,17 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    name: Test for ${{ matrix.folder }}
+
+    strategy:
+      matrix:
+        folders: ["eight", "eight-serve"]
 
     defaults:
       run:
-        working-directory: eight
+        working-directory: ${{ matrix.folder }}
 
     steps:
       - uses: actions/checkout@v3
@@ -32,7 +37,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: eight-${{ hashFiles('**/Cargo.lock') }}-deps
+          key: ${{ matrix.folder }}-${{ hashFiles('**/Cargo.lock') }}-deps
 
       - name: Build project
         run: cargo build --all-features --verbose
