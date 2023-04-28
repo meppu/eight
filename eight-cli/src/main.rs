@@ -12,7 +12,7 @@ async fn main() -> Result<(), &'static str> {
     let args = cli::Args::parse();
 
     let server = Server::from_str(&args.directory).unwrap();
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from((args.bind.octets(), args.port));
     let permission = match args.permission {
         0 => Ok(Permission::Guest),
         1 => Ok(Permission::Admin),
@@ -26,6 +26,5 @@ async fn main() -> Result<(), &'static str> {
         .collect();
 
     expose::expose(config).await;
-
     Ok(())
 }
