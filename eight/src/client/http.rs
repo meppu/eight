@@ -1,6 +1,7 @@
 //! Client implementation for HTTP connections.
 
 use super::messaging;
+use crate::err;
 
 /// Stateless HTTP client struct.
 pub struct Client {
@@ -24,7 +25,7 @@ impl Client {
         Self { host }
     }
 
-    /// Execute a query.
+    /// Execute a query and wait for [`messaging::Response`].
     ///
     /// ```no_run
     /// # async fn hi() {
@@ -49,12 +50,12 @@ impl Client {
             .json(&request)
             .send()
             .await
-            .map_err(|_| super::Error::HTTPRequestFail)?;
+            .map_err(|_| err!(client, HTTPRequestFail))?;
 
         let body = response
             .json::<messaging::Response>()
             .await
-            .map_err(|_| super::Error::ReadBodyFail)?;
+            .map_err(|_| err!(client, ReadBodyFail))?;
 
         Ok(body)
     }

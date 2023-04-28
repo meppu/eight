@@ -21,7 +21,6 @@ async fn main() -> Result<(), &'static str> {
     }?;
 
     let config = ConfigBuilder::from_server(server)
-        .set_fallback("https://surrealdb.com")
         .set_permission(permission)
         .bind(addr)
         .collect();

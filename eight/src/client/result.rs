@@ -14,8 +14,8 @@ pub enum Error {
     WebSocketConnectionFail,
     #[error("Sending message to WebSocket failed")]
     WebSocketSendFail,
-    #[error("Decoding received message from WebSocket failed")]
-    WebSocketDecodeFail,
     #[error("Receive message from WebSocket failed")]
-    WebSocketReceiveFail,
+    WebSocketRecvFail,
+    #[error("Receive message form WebSocket timeout")]
+    WebSocketRecvTimeout,
 }

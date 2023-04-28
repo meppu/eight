@@ -11,7 +11,7 @@ use axum::{
 };
 use std::net::SocketAddr;
 
-/// Start server with given config. Returns true if success.
+/// Start server with given config. This function blocks the flow.
 ///
 /// Note to mention, [`expose`] uses [axum](https://docs.rs/axum/) under the hood.
 pub async fn expose(config: Config) -> bool {
@@ -57,7 +57,7 @@ pub struct Config {
 /// # let server = Server::from_str("/test").unwrap();
 /// # let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
 /// let config = ConfigBuilder::from_server(server)
-///   .set_fallback("https://surrealdb.com")
+///   .set_fallback("https://example.com")
 ///   .bind(addr)
 ///   .collect();
 ///

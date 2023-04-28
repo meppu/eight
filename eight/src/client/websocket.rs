@@ -1,14 +1,16 @@
 //! Client implementation for WebSocket connections.
 
 use super::messaging;
+use crate::err;
 use futures::{
     stream::{SplitSink, SplitStream},
     SinkExt, StreamExt, TryStreamExt,
 };
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::{
     net::TcpStream,
     sync::{oneshot, Mutex},
+    time,
 };
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
@@ -31,13 +33,13 @@ impl Client {
     /// # async fn howdy() {
     /// use eight::client::websocket::Client;
     ///
-    /// let client = Client::connect("http://localhost:3000/").await;
+    /// let client = Client::connect("ws://localhost:3000/").await;
     /// # }
     /// ```
     pub async fn connect(host: &str) -> super::Result<Self> {
         let (connection, _) = connect_async(format!("{host}/rpc"))
             .await
-            .map_err(|_| super::Error::WebSocketConnectionFail)?;
+            .map_err(|_| err!(client, WebSocketConnectionFail))?;
 
         let (sender, receiver) = connection.split();
 
@@ -57,7 +59,7 @@ impl Client {
         });
     }
 
-    /// Message broker for WebSocket connection. Distributes responses through channels by request id. This function blocks the flow.
+    /// Message broker for WebSocket connection. Distributes responses through channels based on request ID. This function blocks the flow.
     pub async fn listen(&self) {
         while let Ok(message) = self.receiver.lock().await.try_next().await {
             if let Some(Message::Text(message)) = message {
@@ -76,7 +78,7 @@ impl Client {
         }
     }
 
-    /// Execute query asynchronous. Returns an oneshot receiver so you can manually receive response later.
+    /// Execute query without waiting for [`messaging::Response`]. Returns an oneshot receiver so you can manually receive it later.
     ///
     /// ```no_run
     /// # async fn howdy2() {
@@ -112,13 +114,13 @@ impl Client {
             .await;
 
         if result.is_err() {
-            Err(super::Error::WebSocketSendFail)
+            Err(err!(client, WebSocketSendFail))
         } else {
             Ok(receiver)
         }
     }
 
-    /// Execute query and wait for response.
+    /// Execute query and wait for [`messaging::Response`].
     ///
     /// ```no_run
     /// # async fn howdy3() {
@@ -140,6 +142,17 @@ impl Client {
         self.cast(request)
             .await?
             .await
-            .map_err(|_| super::Error::WebSocketReceiveFail)
+            .map_err(|_| err!(client, WebSocketRecvFail))
+    }
+
+    /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
+    pub async fn call_in(
+        &self,
+        request: messaging::Request,
+        timeout: Duration,
+    ) -> super::Result<messaging::Response> {
+        time::timeout(timeout, self.call(request))
+            .await
+            .map_err(|_| err!(client, WebSocketRecvTimeout))?
     }
 }

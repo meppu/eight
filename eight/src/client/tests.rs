@@ -1,10 +1,6 @@
+use super::{http, messaging, websocket};
+use crate::{embedded, expose};
 use std::net::SocketAddr;
-
-use super::http;
-use super::messaging;
-use super::websocket;
-use crate::embedded;
-use crate::expose;
 
 #[tokio::test]
 async fn http_client() -> super::Result<()> {

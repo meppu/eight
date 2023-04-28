@@ -12,8 +12,8 @@ pub struct Request {
     pub query: String,
     pub vars: HashMap<String, String>,
 }
-/// Response struct. This is literaly what you receive as JSON while using client.
 
+/// Response struct. This is literaly what you receive as JSON while using client.
 #[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Response {
     #[serde(default)]
