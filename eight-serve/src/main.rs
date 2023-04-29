@@ -27,7 +27,7 @@ async fn main() -> Result<(), &'static str> {
         .collect();
 
     tokio::spawn(expose::expose(config));
-    signal::ctrl_c().await;
+    signal::ctrl_c().await.ok();
 
     Ok(())
 }
