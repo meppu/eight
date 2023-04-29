@@ -2,16 +2,16 @@ use clap::{value_parser, Parser};
 use std::net::Ipv4Addr;
 
 /// Simple program host eight on your server.
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 #[command(author, version, about, long_about = None)]
-pub struct Args {
+pub(crate) struct Args {
     /// Path to create storage.
     #[arg(short, long)]
     pub directory: String,
 
     /// Permission level as number.
     ///
-    /// Guest (0), Admin (1), Owner (2) [default]
+    /// Guest (0), Admin (1), Owner (2)
     #[arg(long, default_value_t = 2)]
     pub permission: u8,
 

@@ -272,7 +272,7 @@ dependencies = [
 
 [[package]]
 name = "eight"
-version = "0.1.0"
+version = "1.0.0-beta"
 dependencies = [
  "axum",
  "futures",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "eight-serve"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "clap",
  "eight",

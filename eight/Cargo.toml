@@ -1,9 +1,15 @@
 [package]
 name = "eight"
-version = "0.1.0"
+version = "1.0.0-beta"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "BSD-3-Clause"
+description = "Simple yet advanced asynchronous embedded key-value database"
+homepage = "https://github.com/meppu/eight/tree/main/eight"
+repository = "https://github.com/meppu/eight"
+keywords = ["key-value", "database", "db", "embedded-database", "key-value-store"]
+categories = ["database-implementations", "data-structures", "embedded"]
+authors = ["meppu <meppu@proton.me>"]
+include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
 [dependencies]
 futures = "0.3"

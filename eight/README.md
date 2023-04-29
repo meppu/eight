@@ -6,7 +6,7 @@ To add this crate as a dependency, simply run
 cargo add eight
 ```
 
-Eight library supports both embedded and client usage. By default it comes with `embedded` feature enabled. You can also enable `client` feature to use official client implementation for `eight-serve`.
+Eight library supports both embedded and client usage. You can enable `client` feature to use official client implementation for `eight-serve`.
 
 ## Embedded Usage
 
@@ -16,6 +16,7 @@ use std::collections::HashMap;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> embedded::Result<()> {
+    // create new server from path
     let server = Server::from_path("/path/to/store");
 
     // start listener in another task
@@ -47,7 +48,64 @@ async fn main() -> embedded::Result<()> {
 
 ## Client Usage
 
-TODO
+### HTTP Client
+
+```rust no_run
+use eight::client::{self, http, messaging};
+
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> client::Result<()> {
+    // crate new stateless client
+    let client = http::Client::new("http://127.0.0.1:8080");
+
+    // prepare request
+    let request = messaging::QueryBuilder::new()
+        .add_query("set $key $value;")
+        .add_query("get $key;")
+        .bind("key", "bob")
+        .bind("value", "some value")
+        .set_random_id()
+        .collect();
+
+    // send request
+    let response = client.execute(request).await?;
+    assert_eq!(response.results.len(), 2);
+
+    Ok(())
+}
+
+```
+
+### WebSocket Client
+
+```rust no_run
+use eight::client::{self, websocket, messaging};
+
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> client::Result<()> {
+    // connect to websocket
+    let client = websocket::Client::connect("ws://127.0.0.1:8080").await?;
+
+    // start message broker
+    client.start().await;
+
+    // prepare request
+    let request = messaging::QueryBuilder::new()
+        .add_query("set $key $value;")
+        .add_query("get $key;")
+        .bind("key", "bob")
+        .bind("value", "some value")
+        .set_random_id()
+        .collect();
+
+    // send request and wait for response
+    let response = client.call(request).await?;
+    assert_eq!(response.results.len(), 2);
+
+    Ok(())
+}
+
+```
 
 ## Documentation
 
