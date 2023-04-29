@@ -58,7 +58,7 @@ Eight query language also supports variables for way more complex data. You also
 ```json
 {
   "user": "bob",
-  "point": 10
+  "point": "10"
 }
 ```
 
@@ -72,7 +72,7 @@ get $user; # 10
 To execute a command without waiting it is result, add `?` to end of the command. You will not receive any responses about these commands.
 
 ```
-set? point 10; # we can't know if it is success or not
+set? point 10; # we don't know the result
 ```
 
 ## Contributing
