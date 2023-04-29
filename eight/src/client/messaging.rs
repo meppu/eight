@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Request struct. This is literaly what you send as JSON while using client.
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct Request {
     #[serde(default)]
     pub id: String,
@@ -14,7 +14,7 @@ pub struct Request {
 }
 
 /// Response struct. This is literaly what you receive as JSON while using client.
-#[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Response {
     #[serde(default)]
     pub id: String,
@@ -33,7 +33,7 @@ pub struct Response {
 ///   .collect();
 ///
 /// ```
-#[derive(Default)]
+#[derive(Default, Debug, Clone)]
 pub struct QueryBuilder {
     req: Request,
 }

@@ -1,6 +1,5 @@
 use crate::embedded::{messaging::Response, Storage};
 
-#[derive(Debug, Clone)]
 pub(super) struct Executor {
     storage: Storage,
 }

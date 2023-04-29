@@ -5,7 +5,6 @@ use super::{
 use crate::embedded::{messaging::Response, Result, Server};
 use std::{collections::HashMap, mem};
 
-#[derive(Debug, Default)]
 pub(crate) struct QueryExecutor {
     source: String,
     env: HashMap<String, String>,

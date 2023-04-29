@@ -41,7 +41,6 @@ pub async fn expose(config: Config) -> bool {
 }
 
 /// Config structure for [`expose`] function.
-#[derive(Debug)]
 pub struct Config {
     addr: SocketAddr,
     fallback_path: Option<String>,
@@ -62,7 +61,6 @@ pub struct Config {
 ///   .collect();
 ///
 /// ```
-#[derive(Debug)]
 pub struct ConfigBuilder {
     config: Config,
 }

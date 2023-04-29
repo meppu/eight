@@ -18,7 +18,6 @@ use tokio::{
     time,
 };
 
-#[derive(Debug)]
 struct ServerRequest {
     sender: oneshot::Sender<Response>,
     request: Request,
@@ -32,7 +31,7 @@ struct ServerRequest {
 /// Casts are just spawns commands and returns receiver channel so you can get the result later.
 /// Calls are also waits for response. You can also add timeout for calls.
 /// Server also has it is own redis-like query language.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Server {
     executor: Arc<Executor>,
     sender: mpsc::UnboundedSender<ServerRequest>,

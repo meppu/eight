@@ -5,12 +5,10 @@ use crate::{
 };
 use std::collections::HashMap;
 
-#[derive(Debug)]
 pub(super) struct Parser {
     env: HashMap<String, String>,
 }
 
-#[derive(Debug)]
 pub(super) enum CallType {
     Await(Request),
     Spawn(Request),

@@ -4,6 +4,7 @@ use super::messaging;
 use crate::err;
 
 /// Stateless HTTP client struct.
+#[derive(Default, Debug, Clone)]
 pub struct Client {
     host: String,
 }

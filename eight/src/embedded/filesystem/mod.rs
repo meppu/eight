@@ -4,7 +4,7 @@ use tokio::fs;
 
 mod utils;
 
-const MAXIMUM_PARALLEL_SEARCH: usize = 1024;
+const MAXIMUM_PARALLEL_SEARCH: usize = 512;
 
 pub(crate) fn create_path(path: &Path, key: &str) -> super::Result<PathBuf> {
     if key.len() < 2 {
