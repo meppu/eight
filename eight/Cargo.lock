@@ -199,6 +199,7 @@ dependencies = [
 name = "eight"
 version = "1.0.0-beta"
 dependencies = [
+ "async-trait",
  "axum",
  "futures",
  "rand",

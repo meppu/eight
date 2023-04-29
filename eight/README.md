@@ -11,24 +11,27 @@ Eight library supports both embedded and client usage. You can enable `client` f
 ## Embedded Usage
 
 ```rust no_run
-use eight::{embedded::{self, messaging::{Request, Response}, Server}};
+use eight::{embedded::{self, messaging::{Request, Response}, Server, Storage, FileStorage}};
 use std::collections::HashMap;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> embedded::Result<()> {
-    // create new server from path
-    let server = Server::from_path("/path/to/store");
+    // create filesystem storage
+    let storage = FileStorage::from_path("/path/to/store");
+
+    // create new server from storage
+    let server = Server::new(storage);
 
     // start listener in another task
     server.start().await;
 
     // send a request to server and wait for response
-    let response = server.call(Request::Set("icecat".into(), "hello world".into())).await?;
+    let response = server.call(Request::Set("icecat".to_string(), "hello world".to_string())).await?;
     assert_eq!(response, Response::Ok);
 
     // query language usage
     let mut env = HashMap::<String, String>::new();
-    env.insert("user".into(), "icecat".into());
+    env.insert("user".to_string(), "icecat".to_string());
 
     let results = server.query("
         get $user;
@@ -36,7 +39,7 @@ async fn main() -> embedded::Result<()> {
     ", env).await?;
 
     assert_eq!(results.len(), 2);
-    assert_eq!(results[0], Response::Text("hello world".into()));
+    assert_eq!(results[0], Response::Text("hello world".to_string()));
     assert_eq!(results[1], Response::Ok);
 
     // clear database before existing

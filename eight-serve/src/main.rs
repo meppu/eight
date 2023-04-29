@@ -1,9 +1,9 @@
 use clap::Parser;
 use eight::{
-    embedded::{Permission, Server},
+    embedded::{FileStorage, MemoryStorage, Permission, Server},
     expose::{self, ConfigBuilder},
 };
-use std::{net::SocketAddr, str::FromStr};
+use std::net::SocketAddr;
 use tokio::signal;
 
 mod cli;
@@ -12,7 +12,12 @@ mod cli;
 async fn main() -> Result<(), &'static str> {
     let args = cli::Args::parse();
 
-    let server = Server::from_str(&args.directory).unwrap();
+    let server = if let Some(directory) = args.directory {
+        Server::new(FileStorage::from_path(directory))
+    } else {
+        Server::new(MemoryStorage::new())
+    };
+
     let addr = SocketAddr::from((args.bind.octets(), args.port));
     let permission = match args.permission {
         0 => Ok(Permission::Guest),

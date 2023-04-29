@@ -6,11 +6,11 @@ use std::net::Ipv4Addr;
 #[command(author, version, about, long_about = None)]
 pub(crate) struct Args {
     /// Path to create storage.
+    /// Will create memory storage if none.
     #[arg(short, long)]
-    pub directory: String,
+    pub directory: Option<String>,
 
     /// Permission level as number.
-    ///
     /// Guest (0), Admin (1), Owner (2)
     #[arg(long, default_value_t = 2)]
     pub permission: u8,

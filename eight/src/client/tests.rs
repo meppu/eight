@@ -4,7 +4,8 @@ use std::net::SocketAddr;
 
 #[tokio::test]
 async fn http_client() -> super::Result<()> {
-    let server = embedded::Server::from_path("/tmp/http_client_test");
+    let storage = embedded::MemoryStorage::new();
+    let server = embedded::Server::new(storage);
 
     let expose_config = expose::ConfigBuilder::from_server(server)
         .bind(SocketAddr::from(([127, 0, 0, 1], 42069)))
@@ -31,7 +32,8 @@ async fn http_client() -> super::Result<()> {
 
 #[tokio::test]
 async fn websocket_client() -> super::Result<()> {
-    let server = embedded::Server::from_path("/tmp/websocket_client_test");
+    let storage = embedded::MemoryStorage::new();
+    let server = embedded::Server::new(storage);
 
     let expose_config = expose::ConfigBuilder::from_server(server)
         .bind(SocketAddr::from(([127, 0, 0, 1], 42070)))

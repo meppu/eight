@@ -1,12 +1,14 @@
 use crate::embedded::{messaging::Response, Storage};
 
 pub(super) struct Executor {
-    storage: Storage,
+    storage: Box<dyn Storage>,
 }
 
 impl Executor {
-    pub fn new(storage: Storage) -> Self {
-        Self { storage }
+    pub fn new(storage: impl Storage) -> Self {
+        Self {
+            storage: Box::new(storage),
+        }
     }
 
     pub async fn set(&self, key: String, value: String) -> Response {

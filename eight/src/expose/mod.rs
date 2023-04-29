@@ -55,9 +55,10 @@ pub struct Config {
 /// Builder for [`Config`] struct.
 ///
 /// ```no_run
-/// # use eight::{embedded::Server, expose::ConfigBuilder};
+/// # use eight::{embedded::{Server, Storage, MemoryStorage}, expose::ConfigBuilder};
 /// # use std::{net::SocketAddr, str::FromStr};
-/// # let server = Server::from_str("/test").unwrap();
+/// # let storage = MemoryStorage::new();
+/// # let server = Server::new(storage);
 /// # let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
 /// let config = ConfigBuilder::from_server(server)
 ///   .set_fallback("https://example.com")

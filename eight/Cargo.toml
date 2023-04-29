@@ -25,6 +25,7 @@ tokio-tungstenite = { version = "0.18", optional = true }
 rand = { version = "0.8", optional = true }
 tracing = { version =  "0.1", optional = true }
 tracing-subscriber = { version =  "0.3", optional = true }
+async-trait = "0.1.68"
 
 [dev-dependencies]
 tokio-test = "0.4"

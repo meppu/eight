@@ -19,11 +19,11 @@ pub enum Error {
     #[error("Unknown error while creating key")]
     CreateDirFail,
     #[error("Setting key failed (probably invalid key)")]
-    FileWriteFail,
+    SetKeyFail,
     #[error("Getting key failed (probably invalid key)")]
-    FileReadFail,
+    GetKeyFail,
     #[error("Deleting key failed (probably invalid key)")]
-    FileRemoveFail,
+    DeleteKeyFail,
     #[error("Removing a directory failed due to filesystem error")]
     DirRemoveFail,
     #[error("Value must be a valid unsigned integer")]

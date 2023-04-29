@@ -1,3 +1,4 @@
+use crate::err;
 use futures::{stream, StreamExt};
 use std::path::{Path, PathBuf};
 use tokio::fs;
@@ -8,9 +9,9 @@ const MAXIMUM_PARALLEL_SEARCH: usize = 512;
 
 pub(crate) fn create_path(path: &Path, key: &str) -> super::Result<PathBuf> {
     if key.len() < 2 {
-        return Err(super::Error::KeyTooShort);
+        return Err(err!(embedded, KeyTooShort));
     } else if !utils::validate_key(key) {
-        return Err(super::Error::KeyWrongFormat);
+        return Err(err!(embedded, KeyWrongFormat));
     }
 
     let mut new_path = path.to_path_buf();
@@ -30,38 +31,38 @@ pub(crate) async fn write(path: &mut PathBuf, content: String) -> super::Result<
     path.pop();
 
     if !exists(path).await? && fs::create_dir_all(&path).await.is_err() {
-        return Err(super::Error::CreateDirFail);
+        return Err(err!(embedded, CreateDirFail));
     }
 
     path.push(file);
 
     fs::write(&path, content)
         .await
-        .map_err(|_| super::Error::FileWriteFail)
+        .map_err(|_| err!(embedded, SetKeyFail))
 }
 
 pub(crate) async fn read(path: &PathBuf) -> super::Result<String> {
     fs::read_to_string(path)
         .await
-        .map_err(|_| super::Error::FileReadFail)
+        .map_err(|_| err!(embedded, GetKeyFail))
 }
 
 pub(crate) async fn delete(path: &PathBuf) -> super::Result<()> {
     fs::remove_file(path)
         .await
-        .map_err(|_| super::Error::FileRemoveFail)
+        .map_err(|_| err!(embedded, DeleteKeyFail))
 }
 
 pub(crate) async fn exists(path: &PathBuf) -> super::Result<bool> {
     fs::try_exists(path)
         .await
-        .map_err(|_| super::Error::CheckExistsFail)
+        .map_err(|_| err!(embedded, CheckExistsFail))
 }
 
 pub(crate) async fn flush(path: &PathBuf) -> super::Result<()> {
     fs::remove_dir_all(path)
         .await
-        .map_err(|_| super::Error::DirRemoveFail)
+        .map_err(|_| err!(embedded, DirRemoveFail))
 }
 
 pub(crate) async fn search(root: &Path, key: &str) -> super::Result<Vec<String>> {
