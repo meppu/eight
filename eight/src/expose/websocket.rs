@@ -13,11 +13,14 @@ use futures::{
 };
 use std::sync::Arc;
 use tokio::sync::Mutex;
+use tracing::{debug, info};
 
 pub(super) async fn handle_connection(
     State(database): State<Server>,
     socket: WebSocketUpgrade,
 ) -> impl IntoResponse {
+    info!("New client connection established");
+
     let database = Arc::new(database);
     socket.on_upgrade(move |socket| execute_loop(database, socket))
 }
@@ -49,7 +52,10 @@ async fn message_process(
     };
 
     let Request { query, vars, id } = payload;
+    info!("Incoming request with ID:{id}");
+
     let response = database.query(query, vars).await;
+    debug!("Sending response for {id} -> {response:?}");
 
     let response = match response {
         Ok(results) => Response { id, results },

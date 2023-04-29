@@ -23,6 +23,8 @@ axum = { version = "0.6", features = ["ws"], optional = true }
 reqwest = { version = "0.11", features = ["json"], optional = true }
 tokio-tungstenite = { version = "0.18", optional = true }
 rand = { version = "0.8", optional = true }
+tracing = { version =  "0.1", optional = true }
+tracing-subscriber = { version =  "0.3", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.4"
@@ -33,7 +35,7 @@ default = []
 macros = []
 serde = ["dep:serde"]
 client = ["serde", "dep:serde_json", "dep:reqwest", "dep:tokio-tungstenite", "dep:rand"]
-expose = ["client", "dep:axum"]
+expose = ["client", "dep:axum", "dep:tracing", "dep:tracing-subscriber"]
 full = ["macros", "serde", "client", "expose"]
 
 [package.metadata.docs.rs]

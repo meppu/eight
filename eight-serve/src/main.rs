@@ -4,6 +4,7 @@ use eight::{
     expose::{self, ConfigBuilder},
 };
 use std::{net::SocketAddr, str::FromStr};
+use tokio::signal;
 
 mod cli;
 
@@ -25,6 +26,8 @@ async fn main() -> Result<(), &'static str> {
         .bind(addr)
         .collect();
 
-    expose::expose(config).await;
+    tokio::spawn(expose::expose(config));
+    signal::ctrl_c().await;
+
     Ok(())
 }

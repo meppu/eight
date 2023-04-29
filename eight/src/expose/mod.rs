@@ -10,11 +10,14 @@ use axum::{
     Router,
 };
 use std::net::SocketAddr;
+use tracing::info;
 
 /// Start server with given config. This function blocks the flow.
 ///
 /// Note to mention, [`expose`] uses [axum](https://docs.rs/axum/) under the hood.
 pub async fn expose(config: Config) -> bool {
+    tracing_subscriber::fmt::init();
+
     let Config {
         addr,
         fallback_path,
@@ -34,6 +37,7 @@ pub async fn expose(config: Config) -> bool {
         app = app.fallback(|| async move { Redirect::permanent(&fallback_path) });
     }
 
+    info!("Starting server on {addr:?}");
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await

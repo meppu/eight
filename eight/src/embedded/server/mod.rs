@@ -142,7 +142,9 @@ impl Server {
             let permission = Arc::clone(&self.permission);
 
             tokio::spawn(async move {
-                if let Err(error) = permission.read().await.allowed(&request) {
+                let is_allowed = { permission.read().await.allowed(&request) };
+
+                if let Err(error) = is_allowed {
                     sender.send(error.as_response()).ok();
                 } else {
                     let response = match request {

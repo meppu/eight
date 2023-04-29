@@ -23,6 +23,8 @@ pub struct Response {
 
 /// Flexible query builder for [`Request`].
 ///
+/// Make sure to always use an unique ID (especially when using WebSocket client) while sending request.
+///
 /// ```no_run
 /// use eight::client::messaging::QueryBuilder;
 ///
