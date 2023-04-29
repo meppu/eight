@@ -16,7 +16,7 @@ use tracing::info;
 ///
 /// Note to mention, [`expose`] uses [axum](https://docs.rs/axum/) under the hood.
 pub async fn expose(config: Config) -> bool {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt::try_init().ok();
 
     let Config {
         addr,
