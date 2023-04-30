@@ -3,7 +3,7 @@ name = "eight"
 version = "1.0.0-beta"
 edition = "2021"
 license = "BSD-3-Clause"
-description = "Simple yet advanced asynchronous embedded key-value database"
+description = "Modular asynchronous embedded key-value database"
 homepage = "https://github.com/meppu/eight/tree/main/eight"
 repository = "https://github.com/meppu/eight"
 keywords = ["key-value", "database", "db", "embedded-database", "key-value-store"]
@@ -39,7 +39,7 @@ filesystem-storage = []
 serde = ["dep:serde"]
 client = ["serde", "dep:serde_json", "dep:reqwest", "dep:tokio-tungstenite", "dep:rand"]
 expose = ["client", "dep:axum", "dep:tracing", "dep:tracing-subscriber"]
-full = ["macros", "serde", "client", "expose"]
+full = ["macros", "expose", "in-memory-storage", "filesystem-storage"]
 
 [package.metadata.docs.rs]
 all-features = true
