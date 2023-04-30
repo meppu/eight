@@ -1,6 +1,12 @@
+<div align="center">
+
+![banner](/.github/assets/banner.webp)
+
 # Eight
 
 Modular asynchronous embedded key-value database.
+
+</div>
 
 Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on... You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database, it is a modular embedded database.
 
