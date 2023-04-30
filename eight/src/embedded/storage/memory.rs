@@ -1,3 +1,5 @@
+//! Official in-memory storage implementation for eight.
+
 use crate::{embedded, err};
 use async_trait::async_trait;
 use std::collections::HashMap;
@@ -5,11 +7,11 @@ use tokio::sync::RwLock;
 
 /// In-memory storage. Preferred for temporary key-values (like cache).
 #[derive(Debug, Default)]
-pub struct MemoryStorage {
+pub struct Storage {
     values: RwLock<HashMap<String, String>>,
 }
 
-impl MemoryStorage {
+impl Storage {
     /// Create new in-memory storage.
     ///
     /// This function is same with [`Default::default`].
@@ -19,7 +21,7 @@ impl MemoryStorage {
 }
 
 #[async_trait]
-impl super::Storage for MemoryStorage {
+impl super::Storage for Storage {
     async fn set(&self, key: String, value: String) -> embedded::Result<()> {
         self.values.write().await.insert(key, value);
         Ok(())

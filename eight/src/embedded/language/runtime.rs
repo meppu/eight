@@ -2,7 +2,7 @@ use super::{
     lexer::lex,
     parser::{CallType, Parser},
 };
-use crate::embedded::{messaging::Response, Result, Server};
+use crate::embedded::{messaging::Response, server::Server, Result};
 use std::{collections::HashMap, mem};
 
 pub(crate) struct QueryExecutor {

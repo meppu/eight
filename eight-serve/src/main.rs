@@ -1,6 +1,9 @@
 use clap::Parser;
 use eight::{
-    embedded::{FileStorage, MemoryStorage, Permission, Server},
+    embedded::{
+        server::{Permission, Server},
+        storage::{filesystem, memory},
+    },
     expose::{self, ConfigBuilder},
 };
 use std::net::SocketAddr;
@@ -13,9 +16,9 @@ async fn main() -> Result<(), &'static str> {
     let args = cli::Args::parse();
 
     let server = if let Some(directory) = args.directory {
-        Server::new(FileStorage::from_path(directory))
+        Server::new(filesystem::Storage::from_path(directory))
     } else {
-        Server::new(MemoryStorage::new())
+        Server::new(memory::Storage::new())
     };
 
     let addr = SocketAddr::from((args.bind.octets(), args.port));

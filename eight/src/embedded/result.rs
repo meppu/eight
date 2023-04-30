@@ -18,11 +18,11 @@ pub enum Error {
     CheckExistsFail,
     #[error("Unknown error while creating key")]
     CreateDirFail,
-    #[error("Setting key failed (probably invalid key)")]
+    #[error("Setting key failed")]
     SetKeyFail,
-    #[error("Getting key failed (probably invalid key)")]
+    #[error("Getting key failed")]
     GetKeyFail,
-    #[error("Deleting key failed (probably invalid key)")]
+    #[error("Deleting key failed")]
     DeleteKeyFail,
     #[error("Removing a directory failed due to filesystem error")]
     DirRemoveFail,
@@ -40,6 +40,8 @@ pub enum Error {
     CommandError(String, usize, usize),
     #[error("You don't have permission to perform this operation")]
     PermissionFailure,
+    #[error("{0}")]
+    Custom(String),
 }
 
 impl Error {

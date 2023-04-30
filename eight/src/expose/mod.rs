@@ -3,7 +3,7 @@
 mod http;
 mod websocket;
 
-use crate::embedded::{Permission, Server};
+use crate::embedded::server::{Permission, Server};
 use axum::{
     response::Redirect,
     routing::{get, post},
@@ -55,9 +55,9 @@ pub struct Config {
 /// Builder for [`Config`] struct.
 ///
 /// ```no_run
-/// # use eight::{embedded::{Server, Storage, MemoryStorage}, expose::ConfigBuilder};
+/// # use eight::{embedded::{server::Server, storage::memory}, expose::ConfigBuilder};
 /// # use std::{net::SocketAddr, str::FromStr};
-/// # let storage = MemoryStorage::new();
+/// # let storage = memory::Storage::new();
 /// # let server = Server::new(storage);
 /// # let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
 /// let config = ConfigBuilder::from_server(server)

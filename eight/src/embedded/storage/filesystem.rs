@@ -1,27 +1,19 @@
+//! Official filesystem based storage implementation for eight.
+
 use crate::{
     embedded::{self, filesystem},
     err,
 };
 use async_trait::async_trait;
-use std::{path::PathBuf, str::FromStr};
+use std::path::PathBuf;
 
 /// Filesystem based storage. Preferred when you need to keep key-values on disk.
 #[derive(Debug, Default)]
-pub struct FileStorage {
+pub struct Storage {
     path: PathBuf,
 }
 
-impl FromStr for FileStorage {
-    type Err = core::convert::Infallible;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self {
-            path: PathBuf::from_str(s)?,
-        })
-    }
-}
-
-impl FileStorage {
+impl Storage {
     /// Create new file-storage.
     ///
     /// This function is same with [`Default::default`].
@@ -32,9 +24,9 @@ impl FileStorage {
     /// Create new file-storage from path.
     ///
     /// ```no_run
-    /// use eight::embedded::FileStorage;
+    /// use eight::embedded::storage::filesystem;
     ///
-    /// FileStorage::from_path("/tmp/test");
+    /// filesystem::Storage::from_path("/tmp/test");
     /// ```
     pub fn from_path<T>(path: T) -> Self
     where
@@ -45,7 +37,7 @@ impl FileStorage {
 }
 
 #[async_trait]
-impl super::Storage for FileStorage {
+impl super::Storage for Storage {
     async fn set(&self, key: String, value: String) -> embedded::Result<()> {
         let mut path = filesystem::create_path(&self.path, &key)?;
         filesystem::write(&mut path, value).await

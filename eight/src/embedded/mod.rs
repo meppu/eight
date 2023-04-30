@@ -1,13 +1,13 @@
 #![doc = include_str!("./README.md")]
 
+#[cfg(feature = "filesystem-storage")]
 mod filesystem;
+
 mod language;
 mod result;
-mod server;
-mod storage;
 
 pub mod messaging;
+pub mod server;
+pub mod storage;
 
 pub use result::*;
-pub use server::*;
-pub use storage::*;

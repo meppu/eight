@@ -1,16 +1,24 @@
-mod filesystem;
-pub use filesystem::FileStorage;
+//! Contains storage trait and official storage implementations.
 
-mod memory;
-pub use memory::MemoryStorage;
+#[cfg(feature = "filesystem-storage")]
+#[cfg_attr(docsrs, doc(cfg(feature = "filesystem-storage")))]
+pub mod filesystem;
 
-use async_trait::async_trait;
+#[cfg(feature = "in-memory-storage")]
+#[cfg_attr(docsrs, doc(cfg(feature = "in-memory-storage")))]
+pub mod memory;
+
+pub use async_trait::async_trait;
 
 /// Simple storage utility.
 ///
 /// This is storage, core of the eight server.
-/// Storage uses files or memory to store key-value data.
-/// You shouldn't use storage itself, use with [`Server`] instead.
+/// You can use storage trait to create your own storage implementation.
+/// And then you can use it on [`Server`] easily.
+///
+/// # Note
+///
+/// Results may vary depending on the storage implementation. For example filesystem based storage can be more restrictive.
 ///
 /// [`Server`]: ./struct.Server.html
 #[async_trait]
@@ -21,8 +29,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./set_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./set_storage_test");
     /// storage.set("bob".to_string(), "some session id".to_string()).await.unwrap();
     ///
     /// # storage.flush().await;
@@ -34,8 +42,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./get_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./get_storage_test");
     /// storage.set("bob".to_string(), "some session id".to_string()).await;
     ///
     /// let value = storage.get("bob".to_string()).await.unwrap();
@@ -50,8 +58,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./delete_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./delete_storage_test");
     /// storage.set("bob".to_string(), "some session id".to_string()).await;
     ///
     /// // ...
@@ -67,8 +75,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./exists_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./exists_storage_test");
     /// storage.set("some".to_string(), "test".to_string()).await;
     /// assert_eq!(Ok(true), storage.exists("some".to_string()).await);
     ///
@@ -81,8 +89,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./increment_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./increment_storage_test");
     /// storage.set("bob_point".to_string(), "10".to_string()).await;
     ///
     /// let value = storage.increment("bob_point".to_string(), 5).await.unwrap();
@@ -97,8 +105,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./decrement_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./decrement_storage_test");
     /// storage.set("bob_point".to_string(), "35".to_string()).await;
     ///
     /// let value = storage.decrement("bob_point".to_string(), 5).await.unwrap();
@@ -111,13 +119,10 @@ pub trait Storage: Send + Sync + 'static {
 
     /// Search key from storage.
     ///
-    /// # Note
-    /// Search may give different results depend on implementation.
-    ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./search_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./search_storage_test");
     ///
     /// for i in 1..100 {
     ///   storage.set(format!("result{}", i), "test".to_string()).await.unwrap();
@@ -135,8 +140,8 @@ pub trait Storage: Send + Sync + 'static {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// # use eight::embedded::{Storage, FileStorage};
-    /// # let storage = FileStorage::from_path("./flush_storage_test");
+    /// # use eight::embedded::storage::{Storage, filesystem};
+    /// # let storage = filesystem::Storage::from_path("./flush_storage_test");
     ///
     /// for i in 1..1000 {
     ///   storage.set(format!("result{}", i), "test".to_string()).await.unwrap();

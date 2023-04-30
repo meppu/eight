@@ -1,12 +1,16 @@
 # Eight
 
-Simple yet advanced asynchronous embedded key-value database.
+Modular asynchronous embedded key-value database.
 
-Eight is an embedded database for Rust that uses filesystem to store values. Eight also has it is own redis-like query language, an embedded server focused on asynchronous execution, `eight-serve` crate to host database on your machine as web server, official HTTP and WebSocket client implementation for `eight-serve`, expose feature to create a web server for eight to use it, macros to make embedded usage easier.
+Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can LRU Cache, Redis Storage, and even implement it for some database like MySQL, MongoDB, SurrealDB and so on... You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database, it is a modular embedded database.
+
+Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, Make your own storage and publish it as a crate!
+
+Visit `examples/` directory for more examples about eight.
 
 - For more information about embedded database itself, please view [README.md](https://github.com/meppu/eight/blob/main/eight/README.md) on `eight/` directory.
 - For more information about `eight-serve`, please view [README.md](https://github.com/meppu/eight/blob/main/eight-serve/README.md) on `eight-serve/` directory.
-- For implementing a client yourself, [view official implementation](https://github.com/meppu/eight/tree/main/eight/src/client) and also visit [expose module](https://github.com/meppu/eight/tree/main/eight/src/expose).
+- For implementing an **Eight Client** yourself, [view official implementation](https://github.com/meppu/eight/tree/main/eight/src/client) and also visit [expose module](https://github.com/meppu/eight/tree/main/eight/src/expose).
 
 ## Commands
 

@@ -1,3 +1,5 @@
+//! Server upgrades your storage into next level.
+
 mod executor;
 mod permission;
 
@@ -7,7 +9,7 @@ use crate::{
     embedded::{
         language::QueryExecutor,
         messaging::{Request, Response},
-        Storage,
+        storage::Storage,
     },
     err,
 };
@@ -43,9 +45,9 @@ impl Server {
     /// Creates new server from storage.
     ///
     /// ```no_run
-    /// use eight::embedded::{Server, FileStorage};
+    /// use eight::embedded::{server::Server, storage::filesystem::Storage};
     ///
-    /// let storage = FileStorage::from_path("/path/to/store");
+    /// let storage = Storage::from_path("/path/to/store");
     /// let server = Server::new(storage);
     /// ```
     pub fn new(storage: impl Storage) -> Self {
@@ -63,9 +65,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{FileStorage, Server, Permission, messaging::{Request, Response}};
+    /// use eight::embedded::{server::{Server, Permission}, storage::filesystem::Storage, messaging::{Request, Response}};
     ///
-    /// let storage = FileStorage::from_path("./test_server_permission");
+    /// let storage = Storage::from_path("./test_server_permission");
     /// let server = Server::new(storage);
     ///
     /// server.set_permission(Permission::Guest).await;
@@ -94,9 +96,9 @@ impl Server {
     ///
     /// ```no_run
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{MemoryStorage, Server};
+    /// use eight::embedded::{server::Server, storage::memory::Storage};
     ///
-    /// let storage = MemoryStorage::new();
+    /// let storage = Storage::new();
     /// let server = Server::new(storage);
     ///
     /// server.start().await;
@@ -151,9 +153,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{Server, MemoryStorage, messaging::{Request, Response}};
+    /// use eight::embedded::{server::Server, storage::memory::Storage, messaging::{Request, Response}};
     ///
-    /// let storage = MemoryStorage::new();
+    /// let storage = Storage::new();
     /// let server = Server::new(storage);
     ///
     /// server.start().await;
@@ -180,9 +182,9 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{Server, MemoryStorage, messaging::{Request, Response}};
+    /// use eight::embedded::{server::Server, storage::memory::Storage, messaging::{Request, Response}};
     ///
-    /// let storage = MemoryStorage::new();
+    /// let storage = Storage::new();
     /// let server = Server::new(storage);
     ///
     /// server.start().await;
@@ -210,10 +212,10 @@ impl Server {
     ///
     /// ```
     /// # tokio_test::block_on(async {
-    /// use eight::embedded::{Server, MemoryStorage, messaging::{Request, Response}};
+    /// use eight::embedded::{server::Server, storage::memory::Storage, messaging::{Request, Response}};
     /// use std::collections::HashMap;
     ///
-    /// let storage = MemoryStorage::new();
+    /// let storage = Storage::new();
     /// let server = Server::new(storage);
     ///
     /// server.start().await;

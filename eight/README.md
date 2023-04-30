@@ -10,14 +10,16 @@ Eight library supports both embedded and client usage. You can enable `client` f
 
 ## Embedded Usage
 
+Eight currently ships two default storage implementation. An example for filesystem storage:
+
 ```rust no_run
-use eight::{embedded::{self, messaging::{Request, Response}, Server, Storage, FileStorage}};
+use eight::{embedded::{self, messaging::{Request, Response}, server::Server, storage::filesystem}};
 use std::collections::HashMap;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> embedded::Result<()> {
     // create filesystem storage
-    let storage = FileStorage::from_path("/path/to/store");
+    let storage = filesystem::Storage::from_path("/path/to/store");
 
     // create new server from storage
     let server = Server::new(storage);

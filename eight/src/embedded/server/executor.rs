@@ -1,4 +1,4 @@
-use crate::embedded::{messaging::Response, Storage};
+use crate::embedded::{messaging::Response, storage::Storage};
 
 pub(super) struct Executor {
     storage: Box<dyn Storage>,

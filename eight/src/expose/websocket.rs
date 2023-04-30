@@ -1,5 +1,5 @@
 use crate::client::messaging::{Request, Response};
-use crate::embedded::Server;
+use crate::embedded::server::Server;
 use axum::{
     extract::{
         ws::{Message, WebSocket},

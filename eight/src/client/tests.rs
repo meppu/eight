@@ -1,11 +1,14 @@
 use super::{http, messaging, websocket};
-use crate::{embedded, expose};
+use crate::{
+    embedded::{server::Server, storage::memory},
+    expose,
+};
 use std::net::SocketAddr;
 
 #[tokio::test]
 async fn http_client() -> super::Result<()> {
-    let storage = embedded::MemoryStorage::new();
-    let server = embedded::Server::new(storage);
+    let storage = memory::Storage::new();
+    let server = Server::new(storage);
 
     let expose_config = expose::ConfigBuilder::from_server(server)
         .bind(SocketAddr::from(([127, 0, 0, 1], 42069)))
@@ -32,8 +35,8 @@ async fn http_client() -> super::Result<()> {
 
 #[tokio::test]
 async fn websocket_client() -> super::Result<()> {
-    let storage = embedded::MemoryStorage::new();
-    let server = embedded::Server::new(storage);
+    let storage = memory::Storage::new();
+    let server = Server::new(storage);
 
     let expose_config = expose::ConfigBuilder::from_server(server)
         .bind(SocketAddr::from(([127, 0, 0, 1], 42070)))
