@@ -8,6 +8,8 @@ Modular asynchronous embedded key-value database.
 
 </div>
 
+> ⚠️ You are currently viewing main branch ⚠️
+
 Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on... You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database, it is a modular embedded database.
 
 Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, Make your own storage and publish it as a crate!
@@ -87,8 +89,9 @@ set? point 10; # we don't know the result
 
 ## Contributing
 
-- Report bugs or request features via issues.
-- Format your code.
+You can always report bugs and request features via [GitHub Issues](https://github.com/meppu/eight/issues).
+
+For pull requests, make sure your code is well-formatted and at least can explain itself.
 
 ## License
 
