@@ -273,6 +273,8 @@ dependencies = [
 [[package]]
 name = "eight"
 version = "1.0.0-alpha"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f6e90f608cb7a0068f0d8103b2bff07ba977ad104cb9b776eae0f3b86edb3365"
 dependencies = [
  "async-trait",
  "axum",
