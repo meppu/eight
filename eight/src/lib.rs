@@ -1,4 +1,10 @@
 #![doc = include_str!("../README.md")]
+#![doc(
+    html_favicon_url = "https://raw.githubusercontent.com/meppu/eight/main/.github/assets/eight.webp"
+)]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/meppu/eight/main/.github/assets/eight.webp"
+)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub mod embedded;
