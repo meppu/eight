@@ -10,15 +10,17 @@ Modular asynchronous embedded key-value database.
 
 > ⚠️ You are currently viewing main branch ⚠️
 
-Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on... You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database, it is a modular embedded database.
+Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used with **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on...
+
+You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database.
 
 Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, Make your own storage and publish it as a crate!
 
-Visit `examples/` directory for more examples about eight.
-
-- For more information about embedded database itself, please view [README.md](https://github.com/meppu/eight/blob/main/eight/README.md) on `eight/` directory.
-- For more information about `eight-serve`, please view [README.md](https://github.com/meppu/eight/blob/main/eight-serve/README.md) on `eight-serve/` directory.
-- For implementing an **Eight Client** yourself, [view official implementation](https://github.com/meppu/eight/tree/main/eight/src/client) and also visit [expose module](https://github.com/meppu/eight/tree/main/eight/src/expose).
+- For stating, visit [Introducing Eight](https://meppu.boo/blog/introducing-eight/).
+- For more information about embedded database itself, please visit [eight/README.md](https://github.com/meppu/eight/blob/main/eight/README.md) on `eight/` directory.
+- For more information about `eight-serve`, please visit [eight-serve/README.md](https://github.com/meppu/eight/blob/main/eight-serve/README.md) on `eight-serve/` directory.
+- For implementing an **Eight Client** yourself, visit [official implementation](https://github.com/meppu/eight/tree/main/eight/src/client) and also visit [expose module](https://github.com/meppu/eight/tree/main/eight/src/expose).
+- For examples, visit `examples/` directory.
 
 ## Commands
 
