@@ -39,7 +39,7 @@ impl FifoCache {
 #[async_trait]
 impl Storage for FifoCache {
     async fn set(&self, key: String, value: String) -> embedded::Result<()> {
-        if { self.values.write().await }.len() == self.max {
+        if self.values.read().await.len() == self.max {
             self.pop().await;
         }
 
