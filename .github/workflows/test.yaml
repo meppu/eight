@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        folder: ["eight", "eight-serve", "examples/eight-custom-storage", "examples/blog-example"]
+        folder: ["eight", "eight-serve", "examples/eight-custom-storage", "examples/blog-example", "examples/eight-expose"]
 
     defaults:
       run:
