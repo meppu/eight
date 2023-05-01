@@ -221,7 +221,7 @@ impl Server {
     /// server.start().await;
     ///
     /// let mut env = HashMap::<String, String>::new();
-    /// env.insert("user".into(), "icecat".into());
+    /// env.insert("user".into(), "pipi".into());
     /// env.insert("val".into(), "hello world!".into());
     ///
     /// let results = server.query("

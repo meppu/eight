@@ -28,12 +28,12 @@ async fn main() -> embedded::Result<()> {
     server.start().await;
 
     // send a request to server and wait for response
-    let response = server.call(Request::Set("icecat".to_string(), "hello world".to_string())).await?;
+    let response = server.call(Request::Set("pipi".to_string(), "hello world".to_string())).await?;
     assert_eq!(response, Response::Ok);
 
     // query language usage
     let mut env = HashMap::<String, String>::new();
-    env.insert("user".to_string(), "icecat".to_string());
+    env.insert("user".to_string(), "pipi".to_string());
 
     let results = server.query("
         get $user;
