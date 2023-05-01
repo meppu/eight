@@ -78,7 +78,7 @@ impl Client {
         }
     }
 
-    /// Execute query without waiting for [`messaging::Response`]. Returns an oneshot receiver so you can manually receive it later.
+    /// Execute query without waiting for [`messaging::Response`]. Returns a oneshot receiver so you can manually receive it later.
     ///
     /// ```no_run
     /// # async fn howdy2() {
@@ -145,7 +145,7 @@ impl Client {
             .map_err(|_| err!(client, WebSocketRecvFail))
     }
 
-    /// Same with call, but also takes a duration as a parameter which allows you to set a timeout for call.
+    /// Same as call, but also takes a duration as a parameter which allows you to set a timeout for call.
     pub async fn call_in(
         &self,
         request: messaging::Request,

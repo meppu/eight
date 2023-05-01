@@ -83,7 +83,7 @@ impl ConfigBuilder {
         }
     }
 
-    /// Set bind adress.
+    /// Set bind address.
     pub fn bind(mut self, addr: SocketAddr) -> Self {
         self.config.addr = addr;
         self

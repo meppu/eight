@@ -4,7 +4,7 @@ use rand::distributions::{Alphanumeric, DistString};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// Request struct. This is literaly what you send as JSON while using client.
+/// Request struct. This is what you send as JSON while using client.
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct Request {
     #[serde(default)]
