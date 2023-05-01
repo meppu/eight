@@ -1,0 +1,59 @@
+name: Run examples
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  find_examples:
+    runs-on: ubuntu-latest
+    name: Find example folders
+
+    outputs:
+      examples: ${{ steps.examples.outputs.examples }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find examples
+        id: examples
+        run: |
+          echo "examples=$(tree -J -d -L 1 examples | jq -c ".[0].contents | map(.name)")" >>$GITHUB_OUTPUT
+
+  example:
+    runs-on: ubuntu-latest
+    name: Run ${{ matrix.folder }} example
+    needs: find_examples
+
+    strategy:
+      matrix:
+        folder: ${{ fromJson(needs.find_examples.outputs.examples) }}
+
+    defaults:
+      run:
+        working-directory: examples/${{ matrix.folder }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ matrix.folder }}-${{ hashFiles('**/Cargo.lock') }}-deps
+
+      - name: Run example
+        run: cargo run --release --all-features --verbose
