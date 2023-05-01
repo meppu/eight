@@ -16,7 +16,7 @@ You can make your own storage implementation and take advantages of **Eight Serv
 
 Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, make your own storage and publish it as a crate!
 
-- For stating, visit [Introducing Eight](https://meppu.boo/blog/introducing-eight/).
+- For a quick start, visit [Introducing Eight](https://meppu.boo/blog/introducing-eight/).
 - For more information about embedded database itself, please visit [eight/README.md](eight/README.md).
 - For more information about `eight-serve`, please visit [eight-serve/README.md](eight-serve/README.md).
 - For implementing an **Eight Client** yourself, visit [official implementation](eight/src/client/) and [expose module](eight/src/expose).
