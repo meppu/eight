@@ -19,7 +19,7 @@ pub(crate) struct Args {
     #[arg(short, long, default_value_t = 8080)]
     pub port: u16,
 
-    /// IPv4 adress to listen.
+    /// IPv4 address to listen.
     #[arg(short, long, default_value_t = Ipv4Addr::new(0, 0, 0, 0), value_parser = value_parser!(Ipv4Addr))]
     pub bind: Ipv4Addr,
 }

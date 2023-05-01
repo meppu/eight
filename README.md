@@ -24,7 +24,7 @@ Eight currently ships two default storage implementations: In-memory storage and
 
 ## Commands
 
-There are currently 9 different commands avaible:
+There are currently 9 different commands available:
 
 - `set [key] [value]`: Create or update a value. Returns `ok` on success.
 - `get [key]`: Get value from key. Returns value as `string` on success.
