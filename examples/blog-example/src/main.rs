@@ -34,7 +34,7 @@ async fn main() -> embedded::Result<()> {
     let response = server
         .call(Request::Set("user".into(), "value".into()))
         .await?;
-    
+
     assert_eq!(
         response,
         Response::Error(embedded::Error::PermissionFailure)
