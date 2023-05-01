@@ -1,12 +1,12 @@
 use clap::{value_parser, Parser};
 use std::net::Ipv4Addr;
 
-/// Simple program host eight on your server.
+/// Simple CLI program to host eight on your server.
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 pub(crate) struct Args {
-    /// Path to create storage.
-    /// Will create memory storage if none.
+    /// Path to create storage in.
+    /// Will create memory storage if not specified.
     #[arg(short, long)]
     pub directory: Option<String>,
 

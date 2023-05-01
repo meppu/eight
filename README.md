@@ -1,6 +1,6 @@
 <div align="center">
 
-![banner](/.github/assets/banner.webp)
+![banner](.github/assets/banner.webp)
 
 # Eight
 
@@ -10,17 +10,17 @@ Modular asynchronous embedded key-value database.
 
 > ⚠️ You are currently viewing main branch ⚠️
 
-Eight is a modular asynchronous embedded key-value database. I said modular because it has something much powerful that can change eight into anything, Storages. If something implements Storage trait, it can be used with **Eight Server**, can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on...
+Eight is a modular asynchronous embedded key-value database. It's modular because it has something much powerful that can change eight into anything: storages. If something implements Storage trait, it can be used with **Eight Server**, that can be hosted with **Eight Expose** and then can be used with **Eight Client**. You can implement LRU Cache, Redis Storage, and even use with some database like MySQL, MongoDB, SurrealDB and so on...
 
-You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, Asynchronous command execution, User permissions etc... This is why eight is not only a simple embedded database.
+You can make your own storage implementation and take advantages of **Eight Server**: Redis-like query language, asynchronous command execution, user permissions etc... This is why eight is not just a simple embedded database.
 
-Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, Make your own storage and publish it as a crate!
+Eight currently ships two default storage implementations: In-memory storage and Filesystem based storage. If you don't like to use them, make your own storage and publish it as a crate!
 
 - For stating, visit [Introducing Eight](https://meppu.boo/blog/introducing-eight/).
-- For more information about embedded database itself, please visit [eight/README.md](https://github.com/meppu/eight/blob/main/eight/README.md) on `eight/` directory.
-- For more information about `eight-serve`, please visit [eight-serve/README.md](https://github.com/meppu/eight/blob/main/eight-serve/README.md) on `eight-serve/` directory.
-- For implementing an **Eight Client** yourself, visit [official implementation](https://github.com/meppu/eight/tree/main/eight/src/client) and also visit [expose module](https://github.com/meppu/eight/tree/main/eight/src/expose).
-- For examples, visit `examples/` directory.
+- For more information about embedded database itself, please visit [eight/README.md](eight/README.md).
+- For more information about `eight-serve`, please visit [eight-serve/README.md](eight-serve/README.md.
+- For implementing an **Eight Client** yourself, visit [official implementation](eight/src/client/) and [expose module](eight/src/expose).
+- For examples, visit [examples](examples/) directory.
 
 ## Commands
 
@@ -38,7 +38,7 @@ There are currently 9 different commands avaible:
 
 ## Syntax
 
-The first argument is processed as command and then following by arguments until it hits `;`.
+The first word is processed as a command, followed by arguments until it hits `;`.
 
 ```
 set bob 10;
@@ -56,18 +56,18 @@ set bob 10; # this is a comment
 
 ### Strings
 
-You can use strings for more complex values. Strings starts with `"` and ends with `"`.
+You can use strings for more complex values. Strings starts and ends with `"`.
 
 When you type `simple value` it will be processed as `["simple", "value"]`. This is where strings become useful. You can simply put `"` to avoid this issue: `"simple value"`.
 
 ```
-set test hello world; # this will not work!
-set test "hello world"; # you should use this instead.
+set test hello world; # this will not work! (value is `["simple", "value"]`)
+set test "hello world"; # you should use this instead. (value is `"simple value"`)
 ```
 
 ### Variables
 
-Eight query language also supports variables for way more complex data. You also should use variables to prevent an injection attack. Variables start with `$`. If a variable doesn't exists, it will simply return itself.
+Eight query language also supports variables for way more complex data. You also should use variables to prevent an injection attack. Variables start with `$`. If a variable doesn't exist, it will simply return itself.
 
 ```json
 {
@@ -83,7 +83,7 @@ get $user; # 10
 
 ### Asynchronous Execution
 
-To execute a command without waiting it is result, add `?` to end of the command. You will not receive any responses about these commands.
+To execute a command without waiting its result, add `?` at end of the command. You will not receive any response on these commands.
 
 ```
 set? point 10; # we don't know the result

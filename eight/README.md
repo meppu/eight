@@ -109,7 +109,6 @@ async fn main() -> client::Result<()> {
 
     Ok(())
 }
-
 ```
 
 ## Documentation

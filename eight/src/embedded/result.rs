@@ -38,7 +38,7 @@ pub enum Error {
     CommandNotFound,
     #[error("{0} (line {1}, column {2})")]
     CommandError(String, usize, usize),
-    #[error("You don't have permission to perform this operation")]
+    #[error("You don't have a permission to perform this operation")]
     PermissionFailure,
     #[error("{0}")]
     Custom(String),

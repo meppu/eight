@@ -31,7 +31,7 @@ struct ServerRequest {
 ///
 /// Eight Server is focused on asynchronous execution. Every command spawns a new tokio task and messaging between command and requester done asynchronous.
 /// Casts are just spawns commands and returns receiver channel so you can get the result later.
-/// Calls are also waits for response. You can also add timeout for calls.
+/// Calls are also wait for response. You can also add timeout for calls.
 /// Server also has it is own redis-like query language.
 #[derive(Clone)]
 pub struct Server {
@@ -149,7 +149,7 @@ impl Server {
         }
     }
 
-    /// Sends request to the server and returns response receiver. This function is useful when you need to run a command and take result later.
+    /// Sends request to the server and returns response receiver. This function is useful when you need to run a command and get its result later.
     ///
     /// ```
     /// # tokio_test::block_on(async {
