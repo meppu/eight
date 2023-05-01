@@ -18,7 +18,7 @@ Eight currently ships two default storage implementations: In-memory storage and
 
 - For stating, visit [Introducing Eight](https://meppu.boo/blog/introducing-eight/).
 - For more information about embedded database itself, please visit [eight/README.md](eight/README.md).
-- For more information about `eight-serve`, please visit [eight-serve/README.md](eight-serve/README.md.
+- For more information about `eight-serve`, please visit [eight-serve/README.md](eight-serve/README.md).
 - For implementing an **Eight Client** yourself, visit [official implementation](eight/src/client/) and [expose module](eight/src/expose).
 - For examples, visit [examples](examples/) directory.
 
@@ -91,7 +91,7 @@ set? point 10; # we don't know the result
 
 ## Contributing
 
-You can always report bugs and request features via [GitHub Issues](https://github.com/meppu/eight/issues).
+You can always report bugs and request features via [GitHub Issues](/issues).
 
 For pull requests, make sure your code is well-formatted and at least can explain itself.
 
