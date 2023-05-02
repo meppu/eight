@@ -1,12 +1,12 @@
-FROM docker.io/rust:1.69 AS builder
-
-WORKDIR /app
-COPY . .
+FROM docker.io/rust:1.69-alpine AS builder
 
 WORKDIR /app/eight-serve
-RUN cargo build --release
+COPY eight-serve .
 
-FROM debian:bullseye-slim
+RUN apk add --no-cache musl-dev openssl-dev pkgconfig
+RUN cargo build --release --target x86_64-unknown-linux-musl
 
-COPY --from=builder /app/eight-serve/target/release/eight-serve /release/eight-serve
-ENTRYPOINT [ "/release/eight-serve" ]
+FROM gcr.io/distroless/static
+
+COPY --from=builder /app/eight-serve/target/x86_64-unknown-linux-musl/release/eight-serve /bin/eight-serve
+ENTRYPOINT [ "/bin/eight-serve" ]
