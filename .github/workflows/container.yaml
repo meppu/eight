@@ -2,35 +2,39 @@ name: Publish container
 
 on:
   push:
-    tags:
-      - "*"
-    branches:
-      - "*"
-
-permissions:
-  contents: read
+    paths: |
+      eight-serve/
+  release:
+    types: [created]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    name: Create container image
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get Tags
-        run: |
-          if [[ "$GITHUB_REF" == *"tags"* ]]; then
-            echo TAGS="latest, ${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          else
-            echo "TAGS=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          fi
-        shell: bash
-
-      - name: Publish
-        uses: docker/build-push-action@v1
+      - name: Login to ghcr
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: "meppu"
-          password: ${{ secrets.PAT }}
-          repository: meppu/eight
-          tags: ${{ env.TAGS }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{raw}}
+
+      - name: Publish
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
