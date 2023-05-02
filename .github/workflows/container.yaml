@@ -2,8 +2,10 @@ name: Publish container
 
 on:
   push:
-    tags:
-    branches:
+    paths: |
+      eight-serve/
+  release:
+    types: [created]
 
 jobs:
   publish:
