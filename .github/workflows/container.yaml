@@ -2,8 +2,9 @@ name: Publish container
 
 on:
   push:
-    paths: |
-      eight-serve/
+    paths:
+      - eight-serve/
+      - Dockerfile
   release:
     types: [created]
 
