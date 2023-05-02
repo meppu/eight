@@ -3,8 +3,14 @@ name: Run tests
 on:
   push:
     branches: [main]
+    paths: |
+      eight/
+      eight-serve/
   pull_request:
     branches: [main]
+    paths: |
+      eight/
+      eight-serve/
 
 env:
   CARGO_TERM_COLOR: always

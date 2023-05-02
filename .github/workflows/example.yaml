@@ -3,8 +3,16 @@ name: Run examples
 on:
   push:
     branches: [main]
+    paths: |
+      eight/
+      eight-serve/
+      examples/
   pull_request:
     branches: [main]
+    paths: |
+      eight/
+      eight-serve/
+      examples/
 
 env:
   CARGO_TERM_COLOR: always
