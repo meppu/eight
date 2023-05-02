@@ -1,3 +1,5 @@
+name: Create release
+
 on:
   release:
     types: [created]
@@ -6,7 +8,6 @@ jobs:
   release:
     name: Release for ${{ matrix.target }}
     runs-on: ubuntu-latest
-    permissions: write-all
 
     strategy:
       fail-fast: false
@@ -20,13 +21,13 @@ jobs:
             archive: zip
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.3
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           RUSTTARGET: ${{ matrix.target }}
           ARCHIVE_TYPES: ${{ matrix.archive }}
-          SRC_DIR: "eight-serve/"
+          SRC_DIR: eight-serve/

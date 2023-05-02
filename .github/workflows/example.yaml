@@ -2,12 +2,9 @@ name: Run examples
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
-
-permissions:
-  contents: read
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -54,6 +51,14 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ matrix.folder }}-${{ hashFiles('**/Cargo.lock') }}-deps
+
+      - name: Run cargo clippy
+        continue-on-error: true
+        run: cargo clippy --no-deps -- -Dwarnings
+
+      - name: Run cargo fmt
+        continue-on-error: true
+        run: cargo fmt --check
 
       - name: Run example
         run: cargo run --release --all-features --verbose
