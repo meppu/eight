@@ -1,7 +1,7 @@
 use super::token::Token;
 use std::mem;
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 enum State {
     String,
     #[default]
@@ -103,17 +103,18 @@ impl Lexer {
     }
 
     fn make_token(&mut self) {
-        self.state = State::default();
-
-        if !self.temp.is_empty() {
-            let token = Token {
-                value: mem::take(&mut self.temp),
-                line: self.line,
-                column: self.column,
-            };
-
-            self.tokens.push(token);
+        let old_state = mem::take(&mut self.state);
+        if self.temp.is_empty() && old_state != State::String {
+            return;
         }
+
+        let token = Token {
+            value: mem::take(&mut self.temp),
+            line: self.line,
+            column: self.column,
+        };
+
+        self.tokens.push(token);
     }
 }
 
