@@ -32,16 +32,18 @@ impl Parser {
             false
         };
 
+        // manually implemented to prevent string allocation for every single query.
+        // also for only accepting full uppercase. SeT or ExisTs is not a valid command.
         let request = match command_name.as_str() {
-            "set" => self.parse_set(tokens),
-            "get" => self.parse_get(tokens),
-            "delete" => self.parse_delete(tokens),
-            "exists" => self.parse_exists(tokens),
-            "incr" => self.parse_increment(tokens),
-            "decr" => self.parse_decrement(tokens),
-            "search" => self.parse_search(tokens),
-            "flush" => self.parse_flush(tokens),
-            "downgrade" => self.parse_downgrade(tokens),
+            "set" | "SET" => self.parse_set(tokens),
+            "get" | "GET" => self.parse_get(tokens),
+            "delete" | "DELETE" => self.parse_delete(tokens),
+            "exists" | "EXISTS" => self.parse_exists(tokens),
+            "incr" | "INCR" => self.parse_increment(tokens),
+            "decr" | "DECR" => self.parse_decrement(tokens),
+            "search" | "SEARCH" => self.parse_search(tokens),
+            "flush" | "FLUSH" => self.parse_flush(tokens),
+            "downgrade" | "DOWNGRADE" => self.parse_downgrade(tokens),
             _ => Err(err!("Command not found", command)),
         }?;
 
