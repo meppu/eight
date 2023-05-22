@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq, Eq)]
 pub(super) struct Token {
     pub(super) value: String,
     pub(super) line: usize,

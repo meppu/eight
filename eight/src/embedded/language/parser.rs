@@ -9,6 +9,7 @@ pub(super) struct Parser {
     env: HashMap<String, String>,
 }
 
+#[derive(Debug, PartialEq)]
 pub(super) enum CallType {
     Await(Request),
     Spawn(Request),
@@ -181,5 +182,73 @@ impl Parser {
         } else {
             Ok(Request::DowngradePermission)
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    fn tokenize(input: &str) -> Vec<Token> {
+        input
+            .split(' ')
+            .map(|t| Token {
+                value: t.to_string(),
+                line: 1,
+                column: 1,
+            })
+            .collect()
+    }
+
+    #[test]
+    fn test_execute() {
+        let mut env = HashMap::new();
+
+        let a = "A".to_string();
+        let b = "B".to_string();
+        let c = 1;
+
+        env.insert("varA".to_string(), a.clone());
+        env.insert("varB".to_string(), b.clone());
+        env.insert("varC".to_string(), c.to_string());
+        let mut parser = Parser::new(env);
+
+        assert_eq!(
+            parser.execute(tokenize("set $varA $varB")).unwrap(),
+            CallType::Await(Request::Set(a.clone(), b.clone()))
+        );
+        assert_eq!(
+            parser.execute(tokenize("get $varA")).unwrap(),
+            CallType::Await(Request::Get(a.clone()))
+        );
+        assert_eq!(
+            parser.execute(tokenize("delete $varA")).unwrap(),
+            CallType::Await(Request::Delete(a.clone()))
+        );
+        assert_eq!(
+            parser.execute(tokenize("incr $varA $varC")).unwrap(),
+            CallType::Await(Request::Increment(a.clone(), c))
+        );
+        assert_eq!(
+            parser.execute(tokenize("decr $varA $varC")).unwrap(),
+            CallType::Await(Request::Decrement(a.clone(), c))
+        );
+        assert_eq!(
+            parser.execute(tokenize("search $varA")).unwrap(),
+            CallType::Await(Request::Search(a.clone()))
+        );
+        assert_eq!(
+            parser.execute(tokenize("flush")).unwrap(),
+            CallType::Await(Request::Flush)
+        );
+        assert_eq!(
+            parser.execute(tokenize("downgrade")).unwrap(),
+            CallType::Await(Request::DowngradePermission)
+        );
+
+        assert_eq!(
+            parser.execute(tokenize("set? $varA $varB")).unwrap(),
+            CallType::Spawn(Request::Set(a.clone(), b.clone()))
+        );
     }
 }

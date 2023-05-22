@@ -1,7 +1,7 @@
 use super::token::Token;
 use std::mem;
 
-#[derive(Default, PartialEq)]
+#[derive(Default, PartialEq, Debug)]
 enum State {
     String,
     #[default]
@@ -123,4 +123,63 @@ pub(super) fn lex(source: String) -> Vec<Vec<Token>> {
     lexer.execute();
 
     lexer.collect()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_execute() {
+        let mut lex = Lexer::new(
+            "this is lexer # comment; \n aftercomment ; \"stringwithoutspace\"; \"string \\\"with space\"".to_string(),
+        );
+        lex.execute();
+        assert_eq!(
+            dbg!(lex.tokens),
+            vec![
+                Token {
+                    value: "this".to_string(),
+                    line: 1,
+                    column: 4,
+                },
+                Token {
+                    value: "is".to_string(),
+                    line: 1,
+                    column: 7,
+                },
+                Token {
+                    value: "lexer".to_string(),
+                    line: 1,
+                    column: 13,
+                },
+                Token {
+                    value: "aftercomment".to_string(),
+                    line: 2,
+                    column: 13,
+                },
+                Token {
+                    value: ";".to_string(),
+                    line: 2,
+                    column: 14,
+                },
+                Token {
+                    value: "stringwithoutspace".to_string(),
+                    line: 2,
+                    column: 35,
+                },
+                Token {
+                    value: ";".to_string(),
+                    line: 2,
+                    column: 36,
+                },
+                Token {
+                    value: "string \"with space".to_string(),
+                    line: 2,
+                    column: 58,
+                },
+            ]
+        );
+        assert_eq!(lex.state, State::Identifier)
+    }
 }
