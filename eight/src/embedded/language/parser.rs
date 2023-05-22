@@ -9,6 +9,7 @@ pub(super) struct Parser {
     env: HashMap<String, String>,
 }
 
+#[derive(Debug, PartialEq)]
 pub(super) enum CallType {
     Await(Request),
     Spawn(Request),
@@ -183,3 +184,6 @@ impl Parser {
         }
     }
 }
+
+#[cfg(test)]
+mod test {}
