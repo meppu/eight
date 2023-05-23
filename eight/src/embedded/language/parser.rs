@@ -184,6 +184,3 @@ impl Parser {
         }
     }
 }
-
-#[cfg(test)]
-mod test {}
