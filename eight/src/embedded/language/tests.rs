@@ -8,11 +8,12 @@ use crate::embedded::{
 #[test]
 fn test_execute_lexer() {
     let mut lex = Lexer::new(
-            "this is lexer # comment; \n aftercomment ; \"stringwithoutspace\"; \"string \\\"with space\";".to_string(),
-        );
+        "this is lexer # comment; \n aftercomment ; \"stringwithoutspace\"; \"string \\\"with space\";".to_string()
+    );
     lex.execute();
+
     assert_eq!(
-        dbg!(lex.collect()),
+        lex.collect(),
         vec![
             vec![
                 Token {
@@ -50,17 +51,6 @@ fn test_execute_lexer() {
     );
 }
 
-fn tokenize(input: &str) -> Vec<Token> {
-    input
-        .split(' ')
-        .map(|t| Token {
-            value: t.to_string(),
-            line: 1,
-            column: 1,
-        })
-        .collect()
-}
-
 #[test]
 fn test_execute_parser() {
     let mut env = HashMap::new();
@@ -78,30 +68,37 @@ fn test_execute_parser() {
         parser.execute(tokenize("set $varA $varB")).unwrap(),
         CallType::Await(Request::Set(a.clone(), b.clone()))
     );
+
     assert_eq!(
         parser.execute(tokenize("get $varA")).unwrap(),
         CallType::Await(Request::Get(a.clone()))
     );
+
     assert_eq!(
         parser.execute(tokenize("delete $varA")).unwrap(),
         CallType::Await(Request::Delete(a.clone()))
     );
+
     assert_eq!(
         parser.execute(tokenize("incr $varA $varC")).unwrap(),
         CallType::Await(Request::Increment(a.clone(), c))
     );
+
     assert_eq!(
         parser.execute(tokenize("decr $varA $varC")).unwrap(),
         CallType::Await(Request::Decrement(a.clone(), c))
     );
+
     assert_eq!(
         parser.execute(tokenize("search $varA")).unwrap(),
         CallType::Await(Request::Search(a.clone()))
     );
+
     assert_eq!(
         parser.execute(tokenize("flush")).unwrap(),
         CallType::Await(Request::Flush)
     );
+
     assert_eq!(
         parser.execute(tokenize("downgrade")).unwrap(),
         CallType::Await(Request::DowngradePermission)
@@ -111,4 +108,16 @@ fn test_execute_parser() {
         parser.execute(tokenize("set? $varA $varB")).unwrap(),
         CallType::Spawn(Request::Set(a.clone(), b.clone()))
     );
+}
+
+// starting here, internal functions for testing only
+fn tokenize(input: &str) -> Vec<Token> {
+    input
+        .split(' ')
+        .map(|t| Token {
+            value: t.to_string(),
+            line: 1,
+            column: 1,
+        })
+        .collect()
 }
