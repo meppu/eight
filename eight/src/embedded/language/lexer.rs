@@ -1,7 +1,7 @@
 use super::token::Token;
 use std::mem;
 
-#[derive(Default, PartialEq)]
+#[derive(Default, PartialEq, Debug)]
 enum State {
     String,
     #[default]
