@@ -1,6 +1,6 @@
 [package]
 name = "eight"
-version = "1.0.0-alpha"
+version = "1.0.0-alpha.2"
 edition = "2021"
 license = "BSD-3-Clause"
 description = "Modular asynchronous embedded key-value database"
@@ -8,7 +8,7 @@ homepage = "https://github.com/meppu/eight/tree/main/eight"
 repository = "https://github.com/meppu/eight"
 keywords = ["key-value", "database", "db", "embedded-database", "key-value-store"]
 categories = ["database-implementations", "data-structures", "embedded"]
-authors = ["meppu <meppu@proton.me>"]
+authors = ["meppu <crates@meppu.boo>"]
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
 [dependencies]
