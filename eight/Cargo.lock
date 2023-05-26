@@ -197,7 +197,7 @@ dependencies = [
 
 [[package]]
 name = "eight"
-version = "1.0.0-alpha"
+version = "1.0.0-alpha.2"
 dependencies = [
  "async-trait",
  "axum",
