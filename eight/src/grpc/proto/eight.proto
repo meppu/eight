@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package eight;
+
+service Eight {
+  rpc RPC (EightRequest) returns (EightReply) {}
+}
+
+message EightRequest {
+  string message = 1;
+}
+
+message EightReply {
+  string message = 1;
+}

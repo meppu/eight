@@ -17,6 +17,10 @@ pub mod client;
 #[cfg_attr(docsrs, doc(cfg(feature = "expose")))]
 pub mod expose;
 
+#[cfg(feature = "grpc")]
+#[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
+pub mod grpc;
+
 #[cfg(feature = "macros")]
 #[cfg_attr(docsrs, doc(cfg(feature = "macros")))]
 mod macros;

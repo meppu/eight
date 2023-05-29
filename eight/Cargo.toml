@@ -26,10 +26,16 @@ tokio-tungstenite = { version = "0.18", optional = true }
 rand = { version = "0.8", optional = true }
 tracing = { version =  "0.1", optional = true }
 tracing-subscriber = { version =  "0.3", optional = true }
+tonic = "0.9.2"
+prost = "0.11.9"
 
 [dev-dependencies]
 tokio-test = "0.4"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+
+[build-dependencies]
+tonic-build = { version = "0.9.2", features = ["prost"] }
 
 [features]
 default = ["filesystem-storage", "in-memory-storage"]
@@ -39,6 +45,7 @@ filesystem-storage = []
 serde = ["dep:serde"]
 client = ["serde", "dep:serde_json", "dep:reqwest", "dep:tokio-tungstenite", "dep:rand"]
 expose = ["client", "dep:axum", "dep:tracing", "dep:tracing-subscriber"]
+grpc = []
 full = ["macros", "expose", "in-memory-storage", "filesystem-storage"]
 
 [package.metadata.docs.rs]
