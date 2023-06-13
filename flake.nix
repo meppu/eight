@@ -28,7 +28,7 @@
 
               languages.rust = {
                 enable = true;
-                version = "latest";
+                version = "stable";
               };
 
               pre-commit.hooks = {
